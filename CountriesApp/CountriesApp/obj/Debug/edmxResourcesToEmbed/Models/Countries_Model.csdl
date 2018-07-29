@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CountriesModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Country">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="60" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="area" Type="Decimal" Precision="11" Scale="3" Nullable="false" />
+    <Property Name="population" Type="Decimal" Precision="12" Scale="0" Nullable="false" />
+    <Property Name="flag" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="anthem" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="presidentID" Type="Int32" />
+    <NavigationProperty Name="Person" Relationship="Self.FK_Country_President" FromRole="Country" ToRole="Person" />
+    <NavigationProperty Name="People" Relationship="Self.FK_PC_birth" FromRole="Country" ToRole="Person" />
+    <NavigationProperty Name="People1" Relationship="Self.FK_PC_residence" FromRole="Country" ToRole="Person" />
+  </EntityType>
+  <EntityType Name="Person">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idNumber" Type="Int32" Nullable="false" />
+    <Property Name="firstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="lastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="birthCountry" Type="Int32" />
+    <Property Name="residenceCountry" Type="Int32" />
+    <Property Name="birthdate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="email" Type="String" MaxLength="60" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="photo" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="interview" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <NavigationProperty Name="Countries" Relationship="Self.FK_Country_President" FromRole="Person" ToRole="Country" />
+    <NavigationProperty Name="Country" Relationship="Self.FK_PC_birth" FromRole="Person" ToRole="Country" />
+    <NavigationProperty Name="Country1" Relationship="Self.FK_PC_residence" FromRole="Person" ToRole="Country" />
+  </EntityType>
+  <Association Name="FK_Country_President">
+    <End Role="Person" Type="Self.Person" Multiplicity="0..1" />
+    <End Role="Country" Type="Self.Country" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Person">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Country">
+        <PropertyRef Name="presidentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PC_birth">
+    <End Role="Country" Type="Self.Country" Multiplicity="0..1" />
+    <End Role="Person" Type="Self.Person" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Country">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Person">
+        <PropertyRef Name="birthCountry" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PC_residence">
+    <End Role="Country" Type="Self.Country" Multiplicity="0..1" />
+    <End Role="Person" Type="Self.Person" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Country">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Person">
+        <PropertyRef Name="residenceCountry" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="CountriesEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Countries" EntityType="Self.Country" />
+    <EntitySet Name="People" EntityType="Self.Person" />
+    <AssociationSet Name="FK_Country_President" Association="Self.FK_Country_President">
+      <End Role="Person" EntitySet="People" />
+      <End Role="Country" EntitySet="Countries" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PC_birth" Association="Self.FK_PC_birth">
+      <End Role="Country" EntitySet="Countries" />
+      <End Role="Person" EntitySet="People" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PC_residence" Association="Self.FK_PC_residence">
+      <End Role="Country" EntitySet="Countries" />
+      <End Role="Person" EntitySet="People" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
