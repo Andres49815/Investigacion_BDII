@@ -20,21 +20,21 @@ namespace CountriesApp.Models
         {
             this.Countries = new HashSet<Country>();
         }
-
+    
         public int id { get; set; }
         [Display(Name = "Cedula")] public int idNumber { get; set; }
         [Display(Name = "Nombre")] public string firstName { get; set; }
         [Display(Name = "Apellido")] public string lastName { get; set; }
-        [Display(Name = "Pais de Nacimiento")] public Nullable<int> birthCountry { get; set; }
+        [Display(Name = "Pais de nacimiento")] public Nullable<int> birthCountry { get; set; }
         [Display(Name = "Pais de residencia")] public Nullable<int> residenceCountry { get; set; }
         [Display(Name = "Fecha de nacimiento")] [DataType(DataType.Date)] public System.DateTime birthdate { get; set; }
-        [Display(Name = "Correo")] [DataType(DataType.EmailAddress)] public string email { get; set; }
-        public byte[] photo { get; set; }
-        public byte[] interview { get; set; }
+        [Display(Name = "Email")] public string email { get; set; }
+        [Display(Name = "Foto")] public byte[] photo { get; set; }
+        [Display(Name = "Entrevista")] public byte[] interview { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Country> Countries { get; set; }
-        public virtual Country Country { get; set; }
-        public virtual Country Country1 { get; set; }
+        [Display(Name = "Pais de nacimiento")] public virtual Country Country { get; set; }
+        [Display(Name = "Pais de residencia")] public virtual Country Country1 { get; set; }
     }
 }

@@ -7,7 +7,7 @@
     <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="name" Type="String" MaxLength="60" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="area" Type="Decimal" Precision="11" Scale="3" Nullable="false" />
-    <Property Name="population" Type="Decimal" Precision="12" Scale="0" Nullable="false" />
+    <Property Name="population" Type="Int16" Nullable="false" />
     <Property Name="flag" Type="Binary" MaxLength="Max" FixedLength="false" />
     <Property Name="anthem" Type="Binary" MaxLength="Max" FixedLength="false" />
     <Property Name="presidentID" Type="Int32" />

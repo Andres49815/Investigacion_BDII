@@ -21,16 +21,16 @@ namespace CountriesApp.Models
             this.People = new HashSet<Person>();
             this.People1 = new HashSet<Person>();
         }
-    
+
         public int id { get; set; }
-        [Display(Name = "Nombre")] public string name { get; set; }
-        public decimal area { get; set; }
-        [Display(Name = "Poblacion")] public decimal population { get; set; }
-        [Display(Name = "Bandera")] public byte[] flag { get; set; }
-        [Display(Name = "Himno")] public byte[] anthem { get; set; }
+        [Display(Name = "Pais")] public string name { get; set; }
+        [Display(Name = "Area")] public decimal area { get; set; }
+        [Display(Name = "Pobalcion")] public short population { get; set; }
+        public byte[] flag { get; set; }
+        public byte[] anthem { get; set; }
         [Display(Name = "Presidente")] public Nullable<int> presidentID { get; set; }
-    
-        public virtual Person Person { get; set; }
+
+        [Display(Name = "Presidente")] public virtual Person Person { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Person> People { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
