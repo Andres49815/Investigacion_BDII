@@ -28,7 +28,7 @@ namespace CountriesApp.Models
         [Display(Name = "Pais de nacimiento")] public Nullable<int> birthCountry { get; set; }
         [Display(Name = "Pais de residencia")] public Nullable<int> residenceCountry { get; set; }
         [Display(Name = "Fecha de nacimiento")] [DataType(DataType.Date)] public System.DateTime birthdate { get; set; }
-        [Display(Name = "Email")] public string email { get; set; }
+        [Display(Name = "Email")] [DataType(DataType.EmailAddress)] public string email { get; set; }
         [Display(Name = "Foto")] public byte[] photo { get; set; }
         [Display(Name = "Entrevista")] public byte[] interview { get; set; }
     
