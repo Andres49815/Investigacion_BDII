@@ -16,6 +16,7 @@ namespace CountriesApp.Controllers
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
+            ViewBag.Actual = 1;
 
             return View();
         }
@@ -25,6 +26,14 @@ namespace CountriesApp.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        //[HttpPost]
+        public ActionResult Hola(int i)
+        {
+            i++;
+            ViewBag.Actual = i;
+            return View("About");
         }
     }
 }

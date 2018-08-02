@@ -21,7 +21,7 @@ namespace CountriesApp.Models
             this.People = new HashSet<Person>();
             this.People1 = new HashSet<Person>();
         }
-
+        
         public int id { get; set; }
         [Display(Name = "Pais")] public string name { get; set; }
         [Display(Name = "Area")] public decimal area { get; set; }
@@ -29,6 +29,7 @@ namespace CountriesApp.Models
         public byte[] flag { get; set; }
         public byte[] anthem { get; set; }
         [Display(Name = "Presidente")] public Nullable<int> presidentID { get; set; }
+
 
         [Display(Name = "Presidente")] public virtual Person Person { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

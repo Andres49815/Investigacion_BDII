@@ -1,0 +1,25 @@
+﻿@model CountriesApp.Models.Country
+
+
+@{
+    ViewBag.Title = "AllCountries";
+}
+
+
+
+<html>
+<head>
+    <meta name="viewport" uiactions="expand" content="width=device-width" />
+</head>
+<body>
+    <form name="frmCountries" id="frmCountries" method="post">
+        <br />
+        <label>@ViewBag.ActualIndex</label>
+        <div class="form-group row">
+            <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = -1 })'"> Anterior </button>
+            <label>@Model.name</label>
+            <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = +1 })'"> Siguiente </button>
+        </div>
+    </form>
+</body>
+</html>
