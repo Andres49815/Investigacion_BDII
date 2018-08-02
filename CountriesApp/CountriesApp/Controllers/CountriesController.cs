@@ -135,29 +135,21 @@ namespace CountriesApp.Controllers
         {
             ViewBag.ActualIndex = 0;
             Country country = db.Countries.Include(c => c.Person).First();
+
             return View(country);
         }
 
-
         public ActionResult ChangeCountry(short actual, short i)
         {
-            List<Country> countries;
+            List<Country> countries = db.Countries.Include(c => c.Person).ToList();
             Country country;
 
-            countries = db.Countries.Include(c => c.Person).ToList();
             actual += i;
+            actual = actual < 0 ? (short)(countries.Count - 1) : (short)(actual == countries.Count ? 0 : actual);
 
-            if (actual < 0)
-            {
-                actual = (short)(countries.Count - 1);
-            }
-            if (actual == countries.Count)
-            {
-                actual = 0;
-            }
             ViewBag.ActualIndex = actual;
-
             country = countries[actual];
+
             return View("AllCountries", country);
         }
     }

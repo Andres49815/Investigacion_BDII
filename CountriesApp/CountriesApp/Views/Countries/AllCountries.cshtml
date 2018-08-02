@@ -5,8 +5,6 @@
     ViewBag.Title = "AllCountries";
 }
 
-
-
 <html>
 <head>
     <meta name="viewport" uiactions="expand" content="width=device-width" />
@@ -14,12 +12,65 @@
 <body>
     <form name="frmCountries" id="frmCountries" method="post">
         <br />
-        <label>@ViewBag.ActualIndex</label>
         <div class="form-group row">
             <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = -1 })'"> Anterior </button>
-            <label>@Model.name</label>
             <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = +1 })'"> Siguiente </button>
         </div>
+        <h2>General Information</h2>
+        <div class="text-center">
+            <label for="name" class="col-sm-2 col-form-label">Nombre del Pais:</label>
+            <input type="text" class="form-control" id="cName" value="@Model.name" placeholder="@Model.name" />
+        </div>
+        <div class="text-info">
+            <label for="population" class="col-sm-2 col-form-label">Poblacion Actual</label>
+            <label>@Model.population</label>
+        </div>
+
+        <h2>President</h2>
+        <div class="text-center">
+            @{
+                try
+                {
+                    string forException = Model.Person.firstName;
+
+                    <label for="presidentName" class="col-sm-2 col-form-label">Presidente:</label>
+                    <input type="text" class="form-control" id="pName" value="@Model.Person.firstName @Model.Person.lastName" placeholder="@Model.name" disabled />
+
+                    <label for="presidentBirthdate" class="col-sm-2 col-form-label">Fecha de Nacimiento:</label>
+                    <input type="text" class="form-control" id="pBirthdate" value="@Model.Person.birthdate" placeholder="@Model.Person.birthdate" disabled />
+                }
+                catch (NullReferenceException nullreferenceexception)
+                {
+                    <label style="color:red">Sin presidente asignado</label>
+                }
+            }
+        </div>
+
+        <h2>People</h2>
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Person.firstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Person.lastName)
+                </th>
+            </tr>
+
+            @foreach (var item in Model.People)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.firstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.lastName)
+                    </td>
+                </tr>
+            }
+
+        </table>
+
     </form>
 </body>
 </html>
