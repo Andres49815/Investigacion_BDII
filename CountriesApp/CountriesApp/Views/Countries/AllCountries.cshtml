@@ -39,7 +39,7 @@
                     <label for="presidentBirthdate" class="col-sm-2 col-form-label">Fecha de Nacimiento:</label>
                     <input type="text" class="form-control" id="pBirthdate" value="@Model.Person.birthdate" placeholder="@Model.Person.birthdate" disabled />
                 }
-                catch (NullReferenceException nullreferenceexception)
+                catch (NullReferenceException)
                 {
                     <label style="color:red">Sin presidente asignado</label>
                 }
@@ -55,9 +55,44 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Person.lastName)
                 </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Person.birthdate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Person.Country)
+                </th>
             </tr>
 
-            @foreach (var item in Model.People)
+            @foreach (var item in Model.People1)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.firstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.lastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.birthdate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Country.name)
+                    </td>
+                </tr>
+            }
+        </table>
+
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Person.firstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Person.lastName)
+                </th>
+            </tr>
+
+            @foreach (var item in Model.Temporal_People())
             {
                 <tr>
                     <td>
@@ -68,9 +103,14 @@
                     </td>
                 </tr>
             }
-
         </table>
-
+        <h2>Register People</h2>
+        <div class="form-group row">
+            <input type="text" class="form-control" id="newPersonName" name="newPersonName" />
+            <input type="text" class="form-control" id="newPersonLastName" name="newPersonLastName" />
+            <input type="date" class="form-control" id="newPersonbirthdate" name="newPersonBirthdate" />
+            <input type="submit" value="Insertar" formaction="/Countries/ReadData?countryID=@Model.id" name="btn_InsertPerson" />
+        </div>
     </form>
 </body>
 </html>
