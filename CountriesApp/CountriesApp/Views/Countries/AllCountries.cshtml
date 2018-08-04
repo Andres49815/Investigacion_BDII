@@ -135,6 +135,12 @@
                     @Html.DisplayNameFor(model => model.Person.lastName)
                 </th>
                 <th>
+                    @Html.DisplayNameFor(model => model.Person.Country)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Person.Country1)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.Person.birthdate)
                 </th>
                 <th>
@@ -152,6 +158,12 @@
                         @Html.DisplayFor(modelItem => item.lastName)
                     </td>
                     <td>
+                        @Html.DisplayFor(modelItem => item.Country.name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Country1.name)
+                    </td>
+                    <td>
                         @Html.DisplayFor(modelItem => item.birthdate)
                     </td>
                     <th>
@@ -167,9 +179,9 @@
             <input type="text" class="form-control" id="newPersonName" name="newPersonName" />
             <input type="text" class="form-control" id="newPersonLastName" name="newPersonLastName" />
             <input type="date" class="form-control" id="newPersonBirthdate" name="newPersonBirthdate" />
-            <input type="email" class="form-control" id="newPersonEmail" name="newPersonEmail" />
             <input type="submit" value="Insertar" formaction="/Countries/ReadData?countryID=@Model.id" name="btn_InsertPerson" />
             <input type="submit" value="Borrar Temporales" formaction="/Countries/DeleteTemporalPeople" name="btn_DeleteTemporal" />
+            <input type="submit" value="Insertar Todos" formaction="/Countries/InsertTemporalPeople" name="btn_InsertTemporalPeople" />
         </div>
     </form>
 </body>

@@ -6,6 +6,10 @@ import random
 
 def Generate_People(countries_len, people_per_country, residence_probability):
 
+    def generate_name(element_list, len_list):
+        selected = element_list[random.randint(0, len_list - 1)]
+        return selected[ : len(selected) - 2]
+
     def generate_birthdate():
         year = str(random.randint(1950, 2018)) + "-"
         month = str(random.randint(1, 12)) + "-"
@@ -25,18 +29,18 @@ def Generate_People(countries_len, people_per_country, residence_probability):
 
     for i in range(1, countries_len + 1):
         for j in range(1, people_per_country + 1):
-            name = names_list[random.randint(0, names_len - 1)]
-            name = name[: len(name) - 2]
-            last_name = last_names_list[random.randint(0, last_names_len - 1)]
-            last_name = last_name[: len(last_name) - 2]
+            # Name and last name
+            name = generate_name(names_list, names_len)
+            last_name = generate_name(last_names_list, last_names_len)
 
             name_instruction = "'" + name + "', "
             last_name_instruction = "'" + last_name + "', "
 
-            id_number_instruction = str(i) + ", "
+            # id number
+            id_number_instruction = str(j) + ", "
             
             # Birth and Residence Country
-            country_instruction = "'" + str(j) + "', "
+            country_instruction = "'" + str(i) + "', "
             if (random.randint(0, 100) < residence_probability):
                 residence_instruction = country_instruction
             else:
@@ -46,7 +50,7 @@ def Generate_People(countries_len, people_per_country, residence_probability):
             birthdate_instruction = "'" + generate_birthdate() + "', "
 
             # Email
-            email_instruction = name + last_name + "@hotmail.com, "
+            email_instruction = "'" + name + last_name + "@hotmail.com', "
 
             # SQL Instruction
             sql_instruction = "INSERT INTO dbo.Person VALUES(" + id_number_instruction + name_instruction\
@@ -55,6 +59,3 @@ def Generate_People(countries_len, people_per_country, residence_probability):
 
             # Write File
             sql_file.write(sql_instruction)
-
-
-Generate_People(100, 15, 80)

@@ -176,7 +176,7 @@ namespace CountriesApp.Controllers
             ViewBag.PopulationIndex = actualPopulationIndex;
             return View("AllCountries", country);
         }
-        
+
         [HttpPost] public ActionResult ReadData(FormCollection data, int countryID)
         {
             Person person = new Person();
@@ -184,13 +184,16 @@ namespace CountriesApp.Controllers
 
             try
             {
+                person.id = db.People.ToList().Count() + Country.TemporalPeople.Count();
                 person.firstName = data["newPersonName"];
                 person.lastName = data["newPersonLastName"];
                 person.birthdate = Convert.ToDateTime(data["newPersonBirthdate"]);
-                person.email = data["newPersonEmail"];
+                person.email = person.firstName + person.lastName + "@hotmail.com";
                 person.birthCountry = countryID;
                 person.residenceCountry = countryID;
+
                 ViewBag.ActualIndex = countryID;
+
                 country.AddTemporal(person);
             }
             catch (FormatException)
@@ -203,8 +206,25 @@ namespace CountriesApp.Controllers
         [HttpPost] public ActionResult DeleteTemporalPeople()
         {
             ViewBag.ActualIndex = 0;
+            ViewBag.PopulationIndex = 1;
             Country.TemporalPeople = new List<Person>();
             return View("AllCountries", db.Countries.First());
+        }
+
+        [HttpPost] public ActionResult InsertTemporalPeople()
+        {
+            Country country;
+
+            foreach (Person person in Country.TemporalPeople)
+                db.People.Add(person);
+
+            db.SaveChanges();
+
+            Country.TemporalPeople = new List<Person>();
+            ViewBag.ActualIndex = 1;
+            ViewBag.PopulationIndex = 1;
+            country = db.Countries.First();
+            return View("AllCountries", country);
         }
     }
 }
