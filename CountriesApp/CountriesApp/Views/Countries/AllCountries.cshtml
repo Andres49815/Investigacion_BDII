@@ -44,11 +44,31 @@
                     @Html.DisplayFor(model => model.population)
                 </td>
                 <td>
-                    @Html.DisplayFor(model => model.flag)
+                    @if (@Html.DisplayFor(model => model.flag) != null)
+                    {
+                        <label class="btn btn-default">
+                            <input type="file" hidden>
+                        </label>
+                    }
+                    else
+                    {
+                        <div class="col-md-6 col-xs-6">
+                            <img src="" class="img-responsive">
+                        </div>
+                    }
                 </td>
                 <td>
-                    @Html.DisplayFor(model => model.anthem)
-                </td>
+                    @if (@Html.DisplayFor(model => model.anthem) != null)
+                    {
+                        <label class="btn btn-default">
+                            <input type="file" hidden>
+                        </label>
+                    }
+                    else
+                    {
+                        <href="">Play Anthem</href>
+                    }
+                    </td>
             </tr>
         </table>
 
