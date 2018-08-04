@@ -163,11 +163,19 @@ namespace CountriesApp.Controllers
         {
             List<Country> countries = db.Countries.Include(c => c.Person).ToList();
             Country country;
+            int actualPopulationIndex;
 
             ViewBag.ActualIndex = actualCountry;
-            ViewBag.PopulationIndex = actualPopulation + sum;
-
             country = countries[actualCountry];
+
+            actualPopulationIndex = actualPopulation + sum;
+
+            if (actualPopulationIndex == 0)
+                actualPopulationIndex = 1;
+
+            if (country.People1.Count() < (actualPopulationIndex - 1) * 10)
+                actualPopulationIndex--;
+            ViewBag.PopulationIndex = actualPopulationIndex;
             return View("AllCountries", country);
         }
         
