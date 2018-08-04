@@ -27,8 +27,8 @@ namespace CountriesApp.Models
         [Display(Name = "Pais")] public string name { get; set; }
         [Display(Name = "Area")] public decimal area { get; set; }
         [Display(Name = "Pobalcion")] public short population { get; set; }
-        public byte[] flag { get; set; }
-        public byte[] anthem { get; set; }
+        [Display(Name = "Bandera")] public byte[] flag { get; set; }
+        [Display(Name = "Himno Nacional")] public byte[] anthem { get; set; }
         [Display(Name = "Presidente")] public Nullable<int> presidentID { get; set; }
         #endregion
 
@@ -68,6 +68,5 @@ namespace CountriesApp.Models
                 TemporalPeople.Add(person);
             }
         }
-
     }
 }

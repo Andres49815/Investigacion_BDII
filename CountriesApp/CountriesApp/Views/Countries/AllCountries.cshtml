@@ -10,22 +10,50 @@
     <meta name="viewport" uiactions="expand" content="width=device-width" />
 </head>
 <body>
+    <!-- People data order: id idNumber firstName lastName birthCountry residenceCountry birthdate email photo interview -->
+    <!-- Country data order: id name area population flag anthem president id -->
     <form name="frmCountries" id="frmCountries" method="post">
         <br />
         <div class="form-group row">
             <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = -1 })'"> Anterior </button>
             <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = +1 })'"> Siguiente </button>
         </div>
-        <h2>General Information</h2>
-        <div class="text-center">
-            <label for="name" class="col-sm-2 col-form-label">Nombre del Pais:</label>
-            <input type="text" class="form-control" id="cName" value="@Model.name" placeholder="@Model.name" />
-        </div>
-        <div class="text-info">
-            <label for="population" class="col-sm-2 col-form-label">Poblacion Actual</label>
-            <label>@Model.population</label>
-        </div>
 
+        <h2>@Model.name</h2>
+
+        <!-- General Information -->
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.area)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.population)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.flag)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.anthem)
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => model.area)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.population)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.flag)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.anthem)
+                </td>
+            </tr>
+        </table>
+
+        <!-- President Information -->
         <h2>President</h2>
         <div class="text-center">
             @{
@@ -46,7 +74,10 @@
             }
         </div>
 
+        <!-- Population Info -->
         <h2>People</h2>
+        <input type="submit" value="Ver Anteriores" formaction="/Countries/TravelPopulation?actualCountry=@ViewBag.ActualIndex&actualPopulation=@ViewBag.PopulationIndex&sum=-1" name="btn_TrvlPopulation_p" />
+        <input type="submit" value="Ver Siguientes" formaction="/Countries/TravelPopulation?actualCountry=@ViewBag.ActualIndex&actualPopulation=@ViewBag.PopulationIndex&sum=+1" name="btn_TrvlPopulation_p" />
         <table class="table">
             <tr>
                 <th>
@@ -61,24 +92,37 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Person.Country)
                 </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Person.email)
+                </th>
             </tr>
 
-            @foreach (var item in Model.People1)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.firstName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.lastName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.birthdate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Country.name)
-                    </td>
-                </tr>
+            @{
+                int start, end;
+
+                start = (ViewBag.PopulationIndex - 1) * 10;
+                end = ViewBag.PopulationIndex * 10;
+
+                for (int i = start; i < end && i < Model.People1.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => Model.People1.ToList()[i].firstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => Model.People1.ToList()[i].lastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => Model.People1.ToList()[i].birthdate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => Model.People1.ToList()[i].Country.name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => Model.People1.ToList()[i].email)
+                        </td>
+                    </tr>
+                }
             }
         </table>
 
@@ -89,6 +133,12 @@
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Person.lastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Person.birthdate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Person.email)
                 </th>
             </tr>
 
@@ -101,6 +151,12 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.lastName)
                     </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.birthdate)
+                    </td>
+                    <th>
+                        @Html.DisplayFor(modelItem => item.email)
+                    </th>
                 </tr>
             }
         </table>
@@ -108,8 +164,10 @@
         <div class="form-group row">
             <input type="text" class="form-control" id="newPersonName" name="newPersonName" />
             <input type="text" class="form-control" id="newPersonLastName" name="newPersonLastName" />
-            <input type="date" class="form-control" id="newPersonbirthdate" name="newPersonBirthdate" />
+            <input type="date" class="form-control" id="newPersonBirthdate" name="newPersonBirthdate" />
+            <input type="email" class="form-control" id="newPersonEmail" name="newPersonEmail" />
             <input type="submit" value="Insertar" formaction="/Countries/ReadData?countryID=@Model.id" name="btn_InsertPerson" />
+            <input type="submit" value="Borrar Temporales" formaction="/Countries/DeleteTemporalPeople" name="btn_DeleteTemporal" />
         </div>
     </form>
 </body>

@@ -136,6 +136,8 @@ namespace CountriesApp.Controllers
         public ActionResult AllCountries()
         {
             ViewBag.ActualIndex = 0;
+            ViewBag.PopulationIndex = 1;
+
             Country country = db.Countries.Include(c => c.Person).First();
 
             return View(country);
@@ -150,27 +152,52 @@ namespace CountriesApp.Controllers
             actual = actual < 0 ? (short)(countries.Count - 1) : (short)(actual == countries.Count ? 0 : actual);
 
             ViewBag.ActualIndex = actual;
+            ViewBag.PopulationIndex = 1;
+
             country = countries[actual];
 
             return View("AllCountries", country);
         }
+
+        [HttpPost] public ActionResult TravelPopulation(short actualCountry, short actualPopulation, short sum)
+        {
+            List<Country> countries = db.Countries.Include(c => c.Person).ToList();
+            Country country;
+
+            ViewBag.ActualIndex = actualCountry;
+            ViewBag.PopulationIndex = actualPopulation + sum;
+
+            country = countries[actualCountry];
+            return View("AllCountries", country);
+        }
         
-        [HttpPost]
-        public ActionResult ReadData(FormCollection data, int countryID)
+        [HttpPost] public ActionResult ReadData(FormCollection data, int countryID)
         {
             Person person = new Person();
             Country country = db.Countries.Find(countryID);
 
-            person.firstName = data["newPersonName"];
-            person.lastName = data["newPersonLastName"];
-            person.birthCountry = countryID;
-            person.residenceCountry = countryID;
+            try
+            {
+                person.firstName = data["newPersonName"];
+                person.lastName = data["newPersonLastName"];
+                person.birthdate = Convert.ToDateTime(data["newPersonBirthdate"]);
+                person.email = data["newPersonEmail"];
+                person.birthCountry = countryID;
+                person.residenceCountry = countryID;
+                ViewBag.ActualIndex = countryID;
+                country.AddTemporal(person);
+            }
+            catch (FormatException)
+            {
 
-            ViewBag.ActualIndex = countryID;
-
-            country.AddTemporal(person);
-
+            }
             return View("AllCountries", country);
+        }
+        [HttpPost] public ActionResult DeleteTemporalPeople()
+        {
+            ViewBag.ActualIndex = 0;
+            Country.TemporalPeople = new List<Person>();
+            return View("AllCountries", db.Countries.First());
         }
     }
 }
