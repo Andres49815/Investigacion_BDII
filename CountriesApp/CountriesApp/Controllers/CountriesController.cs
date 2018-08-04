@@ -169,10 +169,10 @@ namespace CountriesApp.Controllers
             actualPopulationIndex = actualPopulation + sum;
 
             if (actualPopulationIndex == 0)
-                actualPopulationIndex = 1;
+                actualPopulationIndex = country.People1.Count() / 10 + 1;
 
             if (country.People1.Count() < (actualPopulationIndex - 1) * 10)
-                actualPopulationIndex--;
+                actualPopulationIndex = 1;
             ViewBag.PopulationIndex = actualPopulationIndex;
             return View("AllCountries", country);
         }
