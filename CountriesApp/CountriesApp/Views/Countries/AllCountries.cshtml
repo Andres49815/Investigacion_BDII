@@ -10,7 +10,6 @@
     <meta name="viewport" uiactions="expand" content="width=device-width" />
 </head>
 <body>
-    <!-- People data order: id idNumber firstName lastName birthCountry residenceCountry birthdate email photo interview -->
     <!-- Country data order: id name area population flag anthem president id -->
     <form name="frmCountries" id="frmCountries" method="post">
         <br />
@@ -75,6 +74,7 @@
         </div>
 
         <!-- Population Info -->
+        <!-- People data order: id idNumber firstName lastName birthCountry residenceCountry birthdate email photo interview -->
         <h2>People</h2>
         <input type="submit" value="Ver Anteriores" formaction="/Countries/TravelPopulation?actualCountry=@ViewBag.ActualIndex&actualPopulation=@ViewBag.PopulationIndex&sum=-1" name="btn_TrvlPopulation_p" />
         <input type="submit" value="Ver Siguientes" formaction="/Countries/TravelPopulation?actualCountry=@ViewBag.ActualIndex&actualPopulation=@ViewBag.PopulationIndex&sum=+1" name="btn_TrvlPopulation_p" />
@@ -160,6 +160,8 @@
                 </tr>
             }
         </table>
+
+        <!-- Register new people -->
         <h2>Register People</h2>
         <div class="form-group row">
             <input type="text" class="form-control" id="newPersonName" name="newPersonName" />
