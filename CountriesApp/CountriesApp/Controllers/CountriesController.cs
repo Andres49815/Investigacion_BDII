@@ -226,5 +226,32 @@ namespace CountriesApp.Controllers
             country = db.Countries.First();
             return View("AllCountries", country);
         }
+
+
+        [HttpPost]
+        public ActionResult AddFlag(Country country, HttpPostedFileBase flag1)
+        {
+            if (flag1 != null)
+            {
+                country.anthem = new byte[flag1.ContentLength];
+                flag1.InputStream.Read(country.anthem, 0, flag1.ContentLength);
+            }
+            db.Countries.Add(country);
+            db.SaveChanges();
+            return View("AllCountries", country);
+        }
+
+        [HttpPost]
+        public ActionResult AddAnthem(Country country, HttpPostedFileBase anthem1)
+        {
+            if (anthem1 != null)
+            {
+                country.anthem = new byte[anthem1.ContentLength];
+                anthem1.InputStream.Read(country.anthem, 0, anthem1.ContentLength);
+            }
+            db.Countries.Add(country);
+            db.SaveChanges();
+            return View("AllCountries", country);
+        }
     }
 }

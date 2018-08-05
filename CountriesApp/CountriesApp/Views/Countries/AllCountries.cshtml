@@ -14,8 +14,8 @@
     <form name="frmCountries" id="frmCountries" method="post">
         <br />
         <div class="form-group row">
-            <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = -1 })'"> Anterior </button>
-            <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = +1 })'"> Siguiente </button>
+            <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = -1 })'" class="btn btn-default" > Anterior </button>
+            <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = +1 })'" class="btn btn-default" > Siguiente </button>
         </div>
 
         <h2>@Model.name</h2>
@@ -44,10 +44,51 @@
                     @Html.DisplayFor(model => model.population)
                 </td>
                 <td>
-                    @Html.DisplayFor(model => model.flag)
+                    @if (Model.flag == null)
+                    {
+                        using (Html.BeginForm("AddFlag", "Countries", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <input type="file" accept="image/*" id="flag1" name="flag1/">
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="submit" value="Submit"  class="btn btn-default" />
+                                    @Html.ValidationMessageFor(model => model.flag)
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <img src="" class="img-responsive">
+                    }
                 </td>
                 <td>
-                    @Html.DisplayFor(model => model.anthem)
+                    @if (Model.anthem == null)
+                    {
+                        using (Html.BeginForm("AddAnthem","Countries", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <input type="file" accept="audio/*" id="anthem1" name="anthem1/">
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="Submit" class="btn btn-default" />
+                                </div>
+                            </div>
+                            
+                        }
+                    }
+                    else
+                    {
+                        @Html.Display("jeje")
+                    }
                 </td>
             </tr>
         </table>
@@ -76,8 +117,8 @@
         <!-- Population Info -->
         <!-- People data order: id idNumber firstName lastName birthCountry residenceCountry birthdate email photo interview -->
         <h2>People</h2>
-        <input type="submit" value="Ver Anteriores" formaction="/Countries/TravelPopulation?actualCountry=@ViewBag.ActualIndex&actualPopulation=@ViewBag.PopulationIndex&sum=-1" name="btn_TrvlPopulation_p" />
-        <input type="submit" value="Ver Siguientes" formaction="/Countries/TravelPopulation?actualCountry=@ViewBag.ActualIndex&actualPopulation=@ViewBag.PopulationIndex&sum=+1" name="btn_TrvlPopulation_p" />
+        <input type="submit" value="Ver Anteriores" formaction="/Countries/TravelPopulation?actualCountry=@ViewBag.ActualIndex&actualPopulation=@ViewBag.PopulationIndex&sum=-1" name="btn_TrvlPopulation_p" class="btn btn-default" />
+        <input type="submit" value="Ver Siguientes" formaction="/Countries/TravelPopulation?actualCountry=@ViewBag.ActualIndex&actualPopulation=@ViewBag.PopulationIndex&sum=+1" name="btn_TrvlPopulation_p" class="btn btn-default" />
         <table class="table">
             <tr>
                 <th>
@@ -179,9 +220,9 @@
             <input type="text" class="form-control" id="newPersonName" name="newPersonName" />
             <input type="text" class="form-control" id="newPersonLastName" name="newPersonLastName" />
             <input type="date" class="form-control" id="newPersonBirthdate" name="newPersonBirthdate" />
-            <input type="submit" value="Insertar" formaction="/Countries/ReadData?countryID=@Model.id" name="btn_InsertPerson" />
-            <input type="submit" value="Borrar Temporales" formaction="/Countries/DeleteTemporalPeople" name="btn_DeleteTemporal" />
-            <input type="submit" value="Insertar Todos" formaction="/Countries/InsertTemporalPeople" name="btn_InsertTemporalPeople" />
+            <input type="submit" value="Insertar" formaction="/Countries/ReadData?countryID=@Model.id" name="btn_InsertPerson" class="btn btn-default"/>
+            <input type="submit" value="Borrar Temporales" formaction="/Countries/DeleteTemporalPeople" name="btn_DeleteTemporal" class="btn btn-default"/>
+            <input type="submit" value="Insertar Todos" formaction="/Countries/InsertTemporalPeople" name="btn_InsertTemporalPeople" class="btn btn-default"/>
         </div>
     </form>
 </body>
