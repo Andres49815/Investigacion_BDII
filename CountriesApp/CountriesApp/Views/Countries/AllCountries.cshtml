@@ -14,8 +14,8 @@
     <form name="frmCountries" id="frmCountries" method="post">
         <br />
         <div class="form-group row">
-            <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = -1 })'" class="btn btn-default" > Anterior </button>
-            <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = +1 })'" class="btn btn-default" > Siguiente </button>
+            <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = -1 })'" class="btn btn-default"> Anterior </button>
+            <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = +1 })'" class="btn btn-default"> Siguiente </button>
         </div>
 
         <h2>@Model.name</h2>
@@ -56,7 +56,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <input type="submit" value="Submit"  class="btn btn-default" />
+                                    <input type="submit" value="Submit" class="btn btn-default" />
                                     @Html.ValidationMessageFor(model => model.flag)
                                 </div>
                             </div>
@@ -70,7 +70,7 @@
                 <td>
                     @if (Model.anthem == null)
                     {
-                        using (Html.BeginForm("AddAnthem","Countries", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        using (Html.BeginForm("AddAnthem", "Countries", FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
                             @Html.AntiForgeryToken()
 
@@ -82,7 +82,7 @@
                                     <input type="submit" value="Submit" class="btn btn-default" />
                                 </div>
                             </div>
-                            
+
                         }
                     }
                     else
@@ -115,6 +115,23 @@
         </div>
 
         <!-- Population Info -->
+        <!-- Nuevo -->
+
+        @using (Html.BeginForm("AddFlag", "Countries", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <fieldset>
+                <legend>Upload Image</legend>
+
+                @Html.Label("Title")
+                @Html.Editor("fileTitle")<br />
+                Upload File: <input type="file" name="test" />
+                <p>
+                    <input type="submit" value="Create" />
+                </p>
+            </fieldset>
+        }
+
+        <!-- Nuevo -->
         <!-- People data order: id idNumber firstName lastName birthCountry residenceCountry birthdate email photo interview -->
         <h2>People</h2>
         <input type="submit" value="Ver Anteriores" formaction="/Countries/TravelPopulation?actualCountry=@ViewBag.ActualIndex&actualPopulation=@ViewBag.PopulationIndex&sum=-1" name="btn_TrvlPopulation_p" class="btn btn-default" />
@@ -220,9 +237,9 @@
             <input type="text" class="form-control" id="newPersonName" name="newPersonName" />
             <input type="text" class="form-control" id="newPersonLastName" name="newPersonLastName" />
             <input type="date" class="form-control" id="newPersonBirthdate" name="newPersonBirthdate" />
-            <input type="submit" value="Insertar" formaction="/Countries/ReadData?countryID=@Model.id" name="btn_InsertPerson" class="btn btn-default"/>
-            <input type="submit" value="Borrar Temporales" formaction="/Countries/DeleteTemporalPeople" name="btn_DeleteTemporal" class="btn btn-default"/>
-            <input type="submit" value="Insertar Todos" formaction="/Countries/InsertTemporalPeople" name="btn_InsertTemporalPeople" class="btn btn-default"/>
+            <input type="submit" value="Insertar" formaction="/Countries/ReadData?countryID=@Model.id" name="btn_InsertPerson" class="btn btn-default" />
+            <input type="submit" value="Borrar Temporales" formaction="/Countries/DeleteTemporalPeople" name="btn_DeleteTemporal" class="btn btn-default" />
+            <input type="submit" value="Insertar Todos" formaction="/Countries/InsertTemporalPeople" name="btn_InsertTemporalPeople" class="btn btn-default" />
         </div>
     </form>
 </body>

@@ -227,18 +227,33 @@ namespace CountriesApp.Controllers
             return View("AllCountries", country);
         }
 
-
-        [HttpPost]
-        public ActionResult AddFlag(Country country, HttpPostedFileBase flag1)
+        [HttpPost] public string AddFlag(Country country, HttpPostedFileBase flag1)
         {
-            if (flag1 != null)
+            try
             {
-                country.anthem = new byte[flag1.ContentLength];
-                flag1.InputStream.Read(country.anthem, 0, flag1.ContentLength);
+                HttpPostedFileBase file = Request.Files[0];
+                Country c1 = db.Countries.Find(1);
+                c1.flag = new byte[file.ContentLength];
+                file.InputStream.Read(c1.flag, 0, (int)file.ContentLength);
+                db.SaveChanges();
+
+                return c1.name;
+                //return View();
             }
-            db.Countries.Add(country);
-            db.SaveChanges();
-            return View("AllCountries", country);
+            catch (Exception e)
+            {
+                return "No salio LUL";
+                //ModelState.AddModelError("UploadError", e);
+            }
+            //return View();
+            //if (flag1 != null)
+            //{
+            //    country.flag = new byte[flag1.ContentLength];
+            //    flag1.InputStream.Read(country.anthem, 0, flag1.ContentLength);
+            //}
+            //db.Countries.Add(country);
+            //db.SaveChanges();
+            //return View("AllCountries", country);
         }
 
         [HttpPost]
