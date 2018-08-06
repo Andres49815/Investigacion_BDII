@@ -20,6 +20,33 @@
 
         <h2>@Model.name</h2>
 
+        <!-- Flag and anthem -->
+        @using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+
+        }
+        @using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <fieldset>
+                <input type="file" name="test" />
+                <input type="submit" value="Create" />
+            </fieldset>
+        }
+
+        @try
+        {
+            var base64 = Convert.ToBase64String(Model.flag);
+            var imgsrc = string.Format("data:image/png;base64,{0}", base64);
+
+            <div class="col-md-6 col-xs-6">
+                <img src="@imgsrc" class="img-responsive" />
+            </div>
+        }
+        catch (ArgumentNullException)
+        {
+
+        }
+
         <!-- General Information -->
         <table class="table">
             <tr>
@@ -29,12 +56,6 @@
                 <th>
                     @Html.DisplayNameFor(model => model.population)
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.flag)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.anthem)
-                </th>
             </tr>
             <tr>
                 <td>
@@ -42,53 +63,6 @@
                 </td>
                 <td>
                     @Html.DisplayFor(model => model.population)
-                </td>
-                <td>
-                    @if (Model.flag == null)
-                    {
-                        using (Html.BeginForm("AddFlag", "Countries", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                        {
-                            @Html.AntiForgeryToken()
-
-                            <div class="form-horizontal">
-                                <div class="form-group">
-                                    <input type="file" accept="image/*" id="flag1" name="flag1/">
-                                </div>
-
-                                <div class="form-group">
-                                    <input type="submit" value="Submit" class="btn btn-default" />
-                                    @Html.ValidationMessageFor(model => model.flag)
-                                </div>
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <img src="" class="img-responsive">
-                    }
-                </td>
-                <td>
-                    @if (Model.anthem == null)
-                    {
-                        using (Html.BeginForm("AddAnthem", "Countries", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                        {
-                            @Html.AntiForgeryToken()
-
-                            <div class="form-horizontal">
-                                <div class="form-group">
-                                    <input type="file" accept="audio/*" id="anthem1" name="anthem1/">
-                                </div>
-                                <div class="form-group">
-                                    <input type="submit" value="Submit" class="btn btn-default" />
-                                </div>
-                            </div>
-
-                        }
-                    }
-                    else
-                    {
-                        @Html.Display("jeje")
-                    }
                 </td>
             </tr>
         </table>
@@ -115,23 +89,6 @@
         </div>
 
         <!-- Population Info -->
-        <!-- Nuevo -->
-
-        @using (Html.BeginForm("AddFlag", "Countries", FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-            <fieldset>
-                <legend>Upload Image</legend>
-
-                @Html.Label("Title")
-                @Html.Editor("fileTitle")<br />
-                Upload File: <input type="file" name="test" />
-                <p>
-                    <input type="submit" value="Create" />
-                </p>
-            </fieldset>
-        }
-
-        <!-- Nuevo -->
         <!-- People data order: id idNumber firstName lastName birthCountry residenceCountry birthdate email photo interview -->
         <h2>People</h2>
         <input type="submit" value="Ver Anteriores" formaction="/Countries/TravelPopulation?actualCountry=@ViewBag.ActualIndex&actualPopulation=@ViewBag.PopulationIndex&sum=-1" name="btn_TrvlPopulation_p" class="btn btn-default" />
@@ -237,7 +194,7 @@
             <input type="text" class="form-control" id="newPersonName" name="newPersonName" />
             <input type="text" class="form-control" id="newPersonLastName" name="newPersonLastName" />
             <input type="date" class="form-control" id="newPersonBirthdate" name="newPersonBirthdate" />
-            <input type="submit" value="Insertar" formaction="/Countries/ReadData?countryID=@Model.id" name="btn_InsertPerson" class="btn btn-default" />
+            <input type="submit" value="Insertar" formaction="/Countries/ReadData?countryIndex=@ViewBag.ActualIndex" name="btn_InsertPerson" class="btn btn-default" />
             <input type="submit" value="Borrar Temporales" formaction="/Countries/DeleteTemporalPeople" name="btn_DeleteTemporal" class="btn btn-default" />
             <input type="submit" value="Insertar Todos" formaction="/Countries/InsertTemporalPeople" name="btn_InsertTemporalPeople" class="btn btn-default" />
         </div>

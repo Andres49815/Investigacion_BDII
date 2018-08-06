@@ -177,10 +177,10 @@ namespace CountriesApp.Controllers
             return View("AllCountries", country);
         }
 
-        [HttpPost] public ActionResult ReadData(FormCollection data, int countryID)
+        [HttpPost] public ActionResult ReadData(FormCollection data, int countryIndex)
         {
             Person person = new Person();
-            Country country = db.Countries.Find(countryID);
+            Country country = db.Countries.ToList()[countryIndex];
 
             try
             {
@@ -189,11 +189,10 @@ namespace CountriesApp.Controllers
                 person.lastName = data["newPersonLastName"];
                 person.birthdate = Convert.ToDateTime(data["newPersonBirthdate"]);
                 person.email = person.firstName + person.lastName + "@hotmail.com";
-                person.birthCountry = countryID;
-                person.residenceCountry = countryID;
+                person.birthCountry = country.id;
+                person.residenceCountry = country.id;
 
-                ViewBag.ActualIndex = countryID;
-
+                ViewBag.ActualIndex = countryIndex;
                 country.AddTemporal(person);
             }
             catch (FormatException)
@@ -221,43 +220,32 @@ namespace CountriesApp.Controllers
             db.SaveChanges();
 
             Country.TemporalPeople = new List<Person>();
-            ViewBag.ActualIndex = 1;
+            ViewBag.ActualIndex = 0;
             ViewBag.PopulationIndex = 1;
             country = db.Countries.First();
             return View("AllCountries", country);
         }
 
-        [HttpPost] public string AddFlag(Country country, HttpPostedFileBase flag1)
+        [HttpPost] public ActionResult AddFlag(Country country, HttpPostedFileBase flag1, int countryIndex)
         {
+            Country countryModel = db.Countries.ToList()[countryIndex];
             try
             {
                 HttpPostedFileBase file = Request.Files[0];
-                Country c1 = db.Countries.Find(1);
-                c1.flag = new byte[file.ContentLength];
-                file.InputStream.Read(c1.flag, 0, (int)file.ContentLength);
+                countryModel.flag = new byte[file.ContentLength];
+                file.InputStream.Read(countryModel.flag, 0, (int)file.ContentLength);
                 db.SaveChanges();
-
-                return c1.name;
-                //return View();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                return "No salio LUL";
-                //ModelState.AddModelError("UploadError", e);
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            //return View();
-            //if (flag1 != null)
-            //{
-            //    country.flag = new byte[flag1.ContentLength];
-            //    flag1.InputStream.Read(country.anthem, 0, flag1.ContentLength);
-            //}
-            //db.Countries.Add(country);
-            //db.SaveChanges();
-            //return View("AllCountries", country);
+            ViewBag.ActualIndex = countryIndex;
+            ViewBag.PopulationIndex = 1;
+            return View("AllCountries", countryModel);
         }
 
-        [HttpPost]
-        public ActionResult AddAnthem(Country country, HttpPostedFileBase anthem1)
+        [HttpPost] public ActionResult AddAnthem(Country country, HttpPostedFileBase anthem1)
         {
             if (anthem1 != null)
             {
