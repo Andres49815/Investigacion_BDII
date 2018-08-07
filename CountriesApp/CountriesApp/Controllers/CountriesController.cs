@@ -157,7 +157,7 @@ namespace CountriesApp.Controllers
             return View("AllCountries", country);
         }
 
-        [HttpPost] public ActionResult TravelPopulation(short actualCountry, short actualPopulation, short sum)
+        public ActionResult TravelPopulation(short actualCountry, short actualPopulation, short sum)
         {
             List<Country> countries = db.Countries.Include(c => c.Person).ToList();
             Country country;
@@ -177,7 +177,7 @@ namespace CountriesApp.Controllers
             return View("AllCountries", country);
         }
 
-        [HttpPost] public ActionResult ReadData(FormCollection data, int countryIndex)
+        public ActionResult ReadData(FormCollection data, int countryIndex)
         {
             Person person = new Person();
             Country country = db.Countries.ToList()[countryIndex];
@@ -201,6 +201,11 @@ namespace CountriesApp.Controllers
             }
             ViewBag.PopulationIndex = 1;
             return View("AllCountries", country);
+        }
+
+        [HttpPost] public string AddPerson([Bind(Include = "id,idNumber,firstName,lastName,birthdate")] Person person) // string PersonName, string PersonLastName, string Birthdate, int countryIndex
+        {
+            return person.firstName + "  " + person.lastName;
         }
         [HttpPost] public ActionResult DeleteTemporalPeople()
         {
@@ -245,16 +250,25 @@ namespace CountriesApp.Controllers
             return View("AllCountries", countryModel);
         }
 
-        [HttpPost] public ActionResult AddAnthem(Country country, HttpPostedFileBase anthem1)
+        [HttpPost] public string AddAnthem(Country country, HttpPostedFileBase anthem1, int countryIndex)
         {
-            if (anthem1 != null)
-            {
-                country.anthem = new byte[anthem1.ContentLength];
-                anthem1.InputStream.Read(country.anthem, 0, anthem1.ContentLength);
-            }
-            db.Countries.Add(country);
-            db.SaveChanges();
-            return View("AllCountries", country);
+            Country countryModel = db.Countries.ToList()[countryIndex];
+            //try
+            //{
+                HttpPostedFileBase file = Request.Files[0];
+                countryModel.anthem = new byte[file.ContentLength];
+                file.InputStream.Read(country.anthem, 0, (int)file.ContentLength);
+                db.SaveChanges();
+                return "Lul si salio";
+            //}
+            //catch (Exception)
+            //{
+            //    return "Rashos";
+            //    //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            //}
+            //ViewBag.ActualIndex = countryIndex;
+            //ViewBag.PopulationIndex = 1;
+            //return View("AllCountries", country);
         }
     }
 }
