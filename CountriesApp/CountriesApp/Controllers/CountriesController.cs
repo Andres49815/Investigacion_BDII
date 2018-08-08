@@ -250,25 +250,23 @@ namespace CountriesApp.Controllers
             return View("AllCountries", countryModel);
         }
 
-        [HttpPost] public string AddAnthem(Country country, HttpPostedFileBase anthem1, int countryIndex)
+        [HttpPost] public ActionResult AddAnthem(Country country, HttpPostedFileBase anthem1, int countryIndex)
         {
             Country countryModel = db.Countries.ToList()[countryIndex];
-            //try
-            //{
+            try
+            {
                 HttpPostedFileBase file = Request.Files[0];
                 countryModel.anthem = new byte[file.ContentLength];
-                file.InputStream.Read(country.anthem, 0, (int)file.ContentLength);
+                file.InputStream.Read(countryModel.anthem, 0, (int)file.ContentLength);
                 db.SaveChanges();
-                return "Lul si salio";
-            //}
-            //catch (Exception)
-            //{
-            //    return "Rashos";
-            //    //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //}
-            //ViewBag.ActualIndex = countryIndex;
-            //ViewBag.PopulationIndex = 1;
-            //return View("AllCountries", country);
+            }
+            catch (Exception)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ViewBag.ActualIndex = countryIndex;
+            ViewBag.PopulationIndex = 1;
+            return View("AllCountries", countryModel);
         }
     }
 }

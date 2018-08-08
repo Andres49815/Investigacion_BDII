@@ -17,57 +17,87 @@
             <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = -1 })'" class="btn btn-default"> Anterior </button>
             <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = +1 })'" class="btn btn-default"> Siguiente </button>
         </div>
-
-        <h2>@Model.name</h2>
-
-        <!-- Flag and anthem -->
-        @using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-
-        }
-        @using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-            <fieldset>
-                <input type="file" name="test" />
-                <input type="submit" value="AddFlag" />
-            </fieldset>
-        }
-
-        @try
-        {
-            var base64 = Convert.ToBase64String(Model.flag);
-            var imgsrc = string.Format("data:image/png;base64,{0}", base64);
-
-            <div class="col-md-6 col-xs-6">
-                <img src="@imgsrc" class="img-responsive" height="100" width="200" />
+        
+        <div class="container">
+            <div class="col-xs-5">
+                <h1> @Model.name</h1>
             </div>
-        }
-        catch (ArgumentNullException)
-        {
+            <div class="col-xs-6">
+                <h1>@Html.DisplayNameFor(model => model.anthem)</h1>
+            </div>
+            
+        </div>
+        
 
-        }
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-5">
+                    @if (Model.flag == null)
+                    {
+                        using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
 
+                        }
+                        using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            <fieldset>
+                                <input type="file" name="test" />
+                                <input type="submit" value="AddFlag" />
+                            </fieldset>
+                        }
+                    }
+                    else
+                    {
+                        var base64 = Convert.ToBase64String(Model.flag);
+                        var imgsrc = string.Format("data:audio/mp3;base64,{0}", base64);
+
+                        <div class="col-md-6 col-xs-6">
+                            <img src="@imgsrc" class="img-responsive" height="100" width="200" />
+                        </div>
+                    }
+                </div>
+                <div class="col-xs-6">
+                    <div class="row">
+                        @if (Model.anthem == null)
+                        {
+                            using (Html.BeginForm("AddAnthem", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+
+                            }
+                            using (Html.BeginForm("AddAnthem", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                                <fieldset>
+                                    <input type="file" name="test" />
+                                    <input type="submit" value="AddAnthem" />
+                                </fieldset>
+                            }
+                        }
+                        else
+                        {
+
+                            var base64 = Convert.ToBase64String(Model.anthem);
+                            var soundsrc = string.Format("data:audio/mpeg;base64,{0}", base64);
+
+                            <audio controls="" autoplay="" name="media" id="player">
+                                <source src="@soundsrc" type="audio/mpeg">
+                            </audio>
+
+                        }
+                    </div>
+                    <div class="row">
+                        <div class="container">
+                            <div class="col-xs-2">
+                                <h3> @Html.DisplayNameFor(model => model.population)    <b style="color:forestgreen"> @Html.DisplayFor(model => model.population)</b></h3>
+                                <h3> @Html.DisplayNameFor(model => model.area)    <b style="color:forestgreen"> @Html.DisplayFor(model => model.area)</b></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
         <br />
-        <br />
-        <!-- General Information -->
-        <table class="table">
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.area)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.population)
-                </th>
-            </tr>
-            <tr>
-                <td>
-                    @Html.DisplayFor(model => model.area)
-                </td>
-                <td>
-                    @Html.DisplayFor(model => model.population)
-                </td>
-            </tr>
-        </table>
 
         <!-- President Information -->
         <h2>President</h2>
