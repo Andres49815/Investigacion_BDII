@@ -103,6 +103,7 @@
           <NavigationProperty Name="Person" Relationship="Self.FK_Country_President" FromRole="Country" ToRole="Person" />
           <NavigationProperty Name="People" Relationship="Self.FK_PC_birth" FromRole="Country" ToRole="Person" />
           <NavigationProperty Name="People1" Relationship="Self.FK_PC_residence" FromRole="Country" ToRole="Person" />
+          <NavigationProperty Name="SelectedPeople" Relationship="CountriesModel.FK_PC_residence" FromRole="Country" ToRole="Person" />
         </EntityType>
         <EntityType Name="Person">
           <Key>
