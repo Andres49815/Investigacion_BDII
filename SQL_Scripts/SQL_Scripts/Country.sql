@@ -75,4 +75,36 @@ BEGIN
 	END
 END
 
--- Triggers
+GO
+
+CREATE PROCEDURE [dbo].SelectCountry
+	@index	INTEGER
+AS
+BEGIN
+	-- Index Off set
+	IF (@index > (SELECT COUNT(*) FROM dbo.Country))
+	BEGIN
+		SET @index = 1
+	END
+	IF (@index < 1)
+	BEGIN
+		SELECT @index = COUNT(*) FROM dbo.Country
+	END
+
+	-- SELECT
+	SELECT cntry.id, cntry.name, cntry.area, cntry.population, cntry.flag, cntry.anthem, cntry.presidentID, @index AS idx
+	FROM
+	(
+		SELECT TOP (@index) *
+		FROM dbo.Country
+	) cntry LEFT OUTER JOIN
+	(
+		SELECT TOP (@index - 1) *
+		FROM dbo.Country
+	) offset ON (cntry.id = offset.id)
+	WHERE offset.id IS NULL
+END
+
+exec dbo.SelectCountry @index = 1
+select id, name
+from dbo.Country

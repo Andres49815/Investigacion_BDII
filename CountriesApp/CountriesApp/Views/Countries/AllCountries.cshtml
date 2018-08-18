@@ -17,7 +17,7 @@
             <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = -1 })'" class="btn btn-default"> Anterior </button>
             <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = +1 })'" class="btn btn-default"> Siguiente </button>
         </div>
-
+        
         <div class="container">
             <div class="col-xs-5">
                 <h1> @Model.name</h1>
@@ -25,63 +25,58 @@
             <div class="col-xs-6">
                 <h1>@Html.DisplayNameFor(model => model.anthem)</h1>
             </div>
-
         </div>
-
+        
         <div class="container">
             <div class="row">
                 <div class="col-xs-5">
                     @if (Model.flag == null)
-                {
-                    using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                     {
+                        using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
 
-                    }
-                    using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-                    {
+                        }
+                        using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
                         <fieldset>
                             <input type="file" name="test" />
                             <input type="submit" value="AddFlag" />
                         </fieldset>
-                }
-            }
-            else
-            {
-                var base64 = Convert.ToBase64String(Model.flag);
-                var imgsrc = string.Format("data:audio/mp3;base64,{0}", base64);
-
-                <div class="col-md-6 col-xs-6">
-                    <img src="@imgsrc" class="img-responsive" height="100" width="200" />
-                </div>
-        }
+                        }
+                    }
+                    else
+                    {
+                        var base64 = Convert.ToBase64String(Model.flag);
+                        var imgsrc = string.Format("data:audio/mp3;base64,{0}", base64);
+                        <div class="col-md-6 col-xs-6">
+                            <img src="@imgsrc" class="img-responsive" height="100" width="200" />
+                        </div>
+                    }
                 </div>
                 <div class="col-xs-6">
                     <div class="row">
                         @if (Model.anthem == null)
-                    {
-                        using (Html.BeginForm("AddAnthem", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
+                            using (Html.BeginForm("AddAnthem", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
 
+                            }
+                            using (Html.BeginForm("AddAnthem", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                                <fieldset>
+                                    <input type="file" name="test" />
+                                    <input type="submit" value="AddAnthem" />
+                                </fieldset>
+                            }
                         }
-                        using (Html.BeginForm("AddAnthem", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        else
                         {
-                            <fieldset>
-                                <input type="file" name="test" />
-                                <input type="submit" value="AddAnthem" />
-                            </fieldset>
-                    }
-                }
-                else
-                {
-
-                    var base64 = Convert.ToBase64String(Model.anthem);
-                    var soundsrc = string.Format("data:audio/mpeg;base64,{0}", base64);
-
-                    <audio controls="" autoplay="" name="media" id="player">
-                        <source src="@soundsrc" type="audio/mpeg">
-                    </audio>
-
-            }
+                            var base64 = Convert.ToBase64String(Model.anthem);
+                            var soundsrc = string.Format("data:audio/mpeg;base64,{0}", base64);
+                            <audio controls="" autoplay="" name="media" id="player">
+                                <source src="@soundsrc" type="audio/mpeg">
+                            </audio>
+                        }
                     </div>
                     <div class="row">
                         <div class="container">
@@ -100,21 +95,19 @@
         <h2>President</h2>
         <div class="text-center">
             @{
-            try
-            {
-                string forException = Model.Person.firstName;
-
-                <label for="presidentName" class="col-sm-2 col-form-label">Presidente:</label>
-                <input type="text" class="form-control" id="pName" value="@Model.Person.firstName @Model.Person.lastName" placeholder="@Model.name" disabled />
-
-                <label for="presidentBirthdate" class="col-sm-2 col-form-label">Fecha de Nacimiento:</label>
-                <input type="text" class="form-control" id="pBirthdate" value="@Model.Person.birthdate" placeholder="@Model.Person.birthdate" disabled />
-        }
-        catch (NullReferenceException)
-        {
-            <label style="color:red">Sin presidente asignado</label>
-    }
-            }
+                try
+                {
+                    string forException = Model.Person.firstName;
+                    <label for="presidentName" class="col-sm-2 col-form-label">Presidente:</label>
+                    <input type="text" class="form-control" id="pName" value="@Model.Person.firstName @Model.Person.lastName" placeholder="@Model.name" disabled />
+                    <label for="presidentBirthdate" class="col-sm-2 col-form-label">Fecha de Nacimiento:</label>
+                    <input type="text" class="form-control" id="pBirthdate" value="@Model.Person.birthdate" placeholder="@Model.Person.birthdate" disabled />
+                }
+                catch (NullReferenceException)
+                {
+                    <label style="color:red">Sin presidente asignado</label>
+                }
+                }
         </div>
         <!-- Population Info -->
         <!-- People data order: id idNumber firstName lastName birthCountry residenceCountry birthdate email photo interview -->
@@ -141,13 +134,13 @@
                 </th>
             </tr>
             @{
-            int start, end;
+                int start, end;
 
-            start = (ViewBag.PopulationIndex - 1) * 10;
-            end = (ViewBag.PopulationIndex) * 10;
+                start = (ViewBag.PopulationIndex - 1) * 10;
+                end = (ViewBag.PopulationIndex) * 10;
 
-            for (int i = start; i < end && i < Model.People1.Count; i++)
-            {
+                for (int i = start; i < end && i < Model.People1.Count; i++)
+                {
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => Model.People1.ToList()[i].firstName)
@@ -165,37 +158,44 @@
                         @Html.DisplayFor(modelItem => Model.People1.ToList()[i].email)
                     </td>
                 </tr>
-        }
+                }
             }
+        
         </table>
         @section scripts{
             <script>
-                $("#btSiguientes").click(function () {
+                $("#btSiguientes").click(function ()
+                {
                     var dataURL = "@Url.Action("Data", "Countries")";
                     $.ajax({
-                        type:"POST",
+                        type: "POST",
                         url: dataURL,
                         data: {sum: "1"},
-                        success: function (data) {
+                        success: function (data)
+                        {
                             $("#refresh").html(data);
                         },
-                        error: function errorFunc() {
+                        error: function errorFunc()
+                        {
                             alert('error');
                         }
                     })
                 })
             </script>
             <script>
-                $("#btAnteriores").click(function () {
+                $("#btAnteriores").click(function ()
+                {
                     var dataURL = "@Url.Action("Data", "Countries")";
                     $.ajax({
                         type: "POST",
                         url: dataURL,
                         data: {sum: "-1"},
-                        success: function (data) {
+                        success: function (data)
+                        {
                             $("#refresh").html(data);
                         },
-                        error: function errorFunc() {
+                        error: function errorFunc()
+                        {
                             alert('error');
                         }
                     })
@@ -253,34 +253,26 @@
 
         <!-- Register new people -->
         <!-- h2>Register People</!--h2 -->
+        
         @using (Html.BeginForm("AddPerson", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form=data" }))
-    {
-        CountriesApp.Models.Person person;
+        {
+            CountriesApp.Models.Person person;
 
-        person = new CountriesApp.Models.Person();
-        <fieldset>
-            <legend>Register People</legend>
-
-            @Html.LabelFor(p => person.firstName)
-            @Html.EditorFor(p => person.firstName)
-            @Html.LabelFor(p => person.lastName)
-            @Html.EditorFor(p => person.lastName)
-            @Html.LabelFor(p => person.birthdate)
-            @Html.EditorFor(p => person.birthdate)
-            <p>
-                <input type="submit" value="Add person" />
-            </p>
-        </fieldset>
-}
-        @*<div class="form-group row">
-            <input type="text" class="form-control" id="newPersonName" name="newPersonName" />
-            <input type="text" class="form-control" id="newPersonLastName" name="newPersonLastName" />
-            <input type="date" class="form-control" id="newPersonBirthdate" name="newPersonBirthdate" />
-
-            <input type="submit" value="Insertar" formaction="/Countries/ReadData?countryIndex=@ViewBag.ActualIndex" name="btn_InsertPerson" />
-            <input type="submit" value="Borrar Temporales" formaction="/Countries/DeleteTemporalPeople" name="btn_DeleteTemporal" class="btn btn-default" />
-            <input type="submit" value="Insertar Todos" formaction="/Countries/InsertTemporalPeople" name="btn_InsertTemporalPeople" class="btn btn-default" />
-        </div>*@
+            person = new CountriesApp.Models.Person();
+            <fieldset>
+                <legend>Register People</legend>
+                
+                @Html.LabelFor(p => person.firstName)
+                @Html.EditorFor(p => person.firstName)
+                @Html.LabelFor(p => person.lastName)
+                @Html.EditorFor(p => person.lastName)
+                @Html.LabelFor(p => person.birthdate)
+                @Html.EditorFor(p => person.birthdate)
+                <p>
+                    <input type="submit" value="Add person" />
+                </p>
+            </fieldset>
+        }
     </form>
 </body>
 </html>

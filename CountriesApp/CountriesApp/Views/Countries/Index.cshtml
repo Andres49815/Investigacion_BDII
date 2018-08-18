@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CountriesApp.Models.Country>
+﻿@model CountriesApp.Models.Country
 
 @{
     ViewBag.Title = "Index";
@@ -6,58 +6,59 @@
 
 <h2>Index</h2>
 
-<p>
+@*<p>
     @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.area)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.population)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.flag)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.anthem)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Person)
-        </th>
-        <th></th>
-    </tr>
+</p>*@
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.area)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.population)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.flag)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.anthem)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Person.firstName)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.id })
-        </td>
-    </tr>
-}
 
-</table>
+<html>
+<head>
+    <meta name="viewport" uiactions="expand" content="width=device-width" />
+</head>
+<body>
+    <!--  Country data order: id name area population flag anthem presidentID -->
+    <form name="frmCountry" id="frmCountry" method="post">
+        <br />
+        <div class="form-group row">
+            <button type="button">Boton</button>
+        </div>
+    </form>
+    <div class="container">
+        <div class="col-xs-5">
+            <h1>@Model.name</h1>
+        </div>
+        <div class="col-xs-6">
+            <h1>@Html.DisplayNameFor(model => model.anthem)</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-5">
+                @if (Model.flag == null)
+                {
+                    using (Html.BeginForm("AddFlag", "Countries", new {}, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+
+                    }
+                    using (Html.BeginForm("AddFlag", "Countries", new { }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <fieldset>
+                            <input type="file" name="test" />
+                            <input type="submit" value="AddFlag" />
+                        </fieldset>
+                    }
+                }
+                else
+                {
+                    var base64 = Convert.ToBase64String(Model.flag);
+                    var imgsrc = string.Format("data:image/png;base64,{0}", base64);
+                    <div class="col-md-6 col-xs-6">
+                        <img src="@imgsrc" class="img-responsive" height="100" width="200" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</body>
+</html>

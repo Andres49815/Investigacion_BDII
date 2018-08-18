@@ -11,52 +11,33 @@
 
 namespace CountriesApp.Models
 {
-
-using System;
+    using System;
     using System.Collections.Generic;
-    
-public partial class Person
-{
+    using System.ComponentModel.DataAnnotations;
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-    public Person()
+    public partial class Person
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Person()
+        {
 
-        this.Countries = new HashSet<Country>();
+            this.Countries = new HashSet<Country>();
+        }
 
+        public int id { get; set; }
+        public int idNumber { get; set; }
+        [Display(Name = "Nombre")]public string firstName { get; set; }
+        public string lastName { get; set; }
+        public Nullable<int> birthCountry { get; set; }
+        public Nullable<int> residenceCountry { get; set; }
+        public System.DateTime birthdate { get; set; }
+        public string email { get; set; }
+        public byte[] photo { get; set; }
+        public byte[] interview { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Country> Countries { get; set; }
+        public virtual Country Country { get; set; }
+        public virtual Country Country1 { get; set; }
     }
-
-
-    public int id { get; set; }
-
-    public int idNumber { get; set; }
-
-    public string firstName { get; set; }
-
-    public string lastName { get; set; }
-
-    public Nullable<int> birthCountry { get; set; }
-
-    public Nullable<int> residenceCountry { get; set; }
-
-    public System.DateTime birthdate { get; set; }
-
-    public string email { get; set; }
-
-    public byte[] photo { get; set; }
-
-    public byte[] interview { get; set; }
-
-
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-
-    public virtual ICollection<Country> Countries { get; set; }
-
-    public virtual Country Country { get; set; }
-
-    public virtual Country Country1 { get; set; }
-
-}
-
 }
