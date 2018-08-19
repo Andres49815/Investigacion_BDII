@@ -21,37 +21,171 @@ namespace CountriesApp.Controllers
             "user id=anobando;password=anobando;MultipleActiveResultSets=True;App=EntityFramework";
 
         #region ConnectionProcedures
-        private static Country SelectCountry(int possition)
+        private static List<Country> SelectAllCountries()
         {
             SqlConnection connection = new SqlConnection(connectionInfo);
-            SqlCommand command = new SqlCommand("dbo.SelectCountry", connection);
-            command.CommandType = System.Data.CommandType.StoredProcedure;
-            // Parameters
-            command.Parameters.Add("@index", SqlDbType.Int).Value = possition;
-            // Get values from the query
-            SqlDataAdapter adapter = new SqlDataAdapter(command);
-            DataTable dataset = new DataTable();
-            adapter.Fill(dataset);
-            // Result
-            foreach (DataRow row in dataset.Rows)
+            connection.Open();
+            List<Country> countries = new List<Country>();
+            using (SqlCommand command = new SqlCommand("SELECT id AS id, name as name from dbo.Country", connection))
             {
-                int id = int.Parse(row["id"].ToString());
-                string name = row["name"].ToString();
-                decimal area = decimal.Parse(row["area"].ToString());
-                byte[] flag = Encoding.ASCII.GetBytes(row["flag"].ToString());
-                byte[] anthem = Encoding.ASCII.GetBytes(row["anthem"].ToString());
-                int presidentId = int.Parse(row["presidentID"].ToString());
-                return new Country(id, name, area, flag, anthem, presidentId);
+                command.CommandTimeout = 0;
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader != null)
+                    {
+                        while (reader.Read())
+                        {
+                            Country country = new Country();
+                            country.id = (int)reader["id"];
+                            country.name = (string)reader["name"];
+                            countries.Add(country);
+                        }
+                    }
+                }
+            }
+            connection.Close();
+            return countries;
+        }
+        private static List<Object> SelectCountry(int possition)
+        {
+            int id = 0, population = 0, presidentId = 0, idx = 0;
+            string name = "";
+            decimal area = 0;
+            byte[] flag = null, anthem = null;
+
+            SqlConnection connection = new SqlConnection(connectionInfo);
+            connection.Open();
+            using (SqlCommand command = new SqlCommand("dbo.SelectCountry", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandTimeout = 0;
+                command.Parameters.AddWithValue("@index", possition);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader != null)
+                    {
+                        while (reader.Read())
+                        {
+                            id = (int)reader["id"];
+                            name = (string)reader["name"];
+                            area = (decimal)reader["area"];
+                            population = (int)(decimal)reader["population"];
+                            flag = reader["flag"] != DBNull.Value ? (byte[])reader["flag"] : null;
+                            anthem = reader["anthem"] != DBNull.Value ? (byte[])reader["anthem"] : null;
+                            try
+                            {
+                                presidentId = (int)reader["presidentID"];
+                            }
+                            catch(InvalidCastException)
+                            {
+                                presidentId = -1;
+                            }
+                            idx = (int)reader["idx"];
+                        }
+                    }
+                }
+            }
+            connection.Close();
+            List<Object> obj = new List<object>();
+            obj.Add(new Country(id, name, area, population, flag, anthem, presidentId));
+            obj.Add(idx);
+            return obj;
+        }
+        private static Person SelectPresident(int presidentID)
+        {
+            if (presidentID == -1)
+            {
+                return null;
+            }
+            SqlConnection connection = new SqlConnection(connectionInfo);
+            connection.Open();
+            string query = "SELECT firstName, lastName, birthdate\n" +
+                "FROM dbo.Person P INNER JOIN dbo.Country C ON (P.id = C.presidentID)\n" +
+                "WHERE C.presidentID = " + presidentID.ToString();
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.CommandTimeout = 0;
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader != null)
+                    {
+                        while (reader.Read())
+                        {
+                            Person president = new Person();
+                            president.firstName = (string)reader["firstName"];
+                            president.lastName = (string)reader["lastName"];
+                            president.birthdate = (DateTime)reader["birthdate"];
+                            connection.Close();
+                            return president;
+                        }
+                    }
+                }
             }
             return null;
+        }
+        private static List<object> SelectPeople(int country, int start)
+        {
+            int id = 0, idNumber = 0, birthCountry = 0, residenceCountry = 0, idx = 0;
+            string firstName = "", lastName = "", email = "";
+            DateTime birthdate = new DateTime();
+            byte[] photo = null, interview = null;
+            List<Person> people = new List<Person>();
+
+            SqlConnection connection = new SqlConnection(connectionInfo);
+            connection.Open();
+            using (SqlCommand command = new SqlCommand("dbo.SelectPeople", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandTimeout = 0;
+                command.Parameters.AddWithValue("@country", country);
+                command.Parameters.AddWithValue("@start", start);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader != null)
+                    {
+                        while (reader.Read())
+                        {
+                            id = (int)reader["id"];
+                            idNumber = (int)reader["idNumber"];
+                            firstName = (string)reader["firstName"];
+                            lastName = (string)reader["lastName"];
+                            birthCountry = (int)reader["birthCountry"];
+                            residenceCountry = (int)reader["residenceCountry"];
+                            birthdate = (DateTime)reader["birthdate"];
+                            email = (string)reader["email"];
+                            photo = reader["photo"] != DBNull.Value ? (byte[])reader["photo"] : null;
+                            interview = reader["interview"] != DBNull.Value ? (byte[])reader["interview"] : null;
+                            idx = (int)reader["idx"];
+                            people.Add(new Person(id, idNumber, firstName, lastName, birthCountry, residenceCountry, birthdate, email, photo, interview));
+                        }
+                    }
+                }
+            }
+            connection.Close();
+            List<object> obj = new List<object>();
+            obj.Add(people);
+            obj.Add(idx);
+            return obj;
         }
         #endregion
 
         #region Autogenerated Code
         // GET: Countries
-        public ActionResult Index()
+        public ActionResult Index(int? countryIndex = 1, int? sum = 0)
         {
-            Country country = SelectCountry(1);
+            countryIndex += sum;
+
+            List<Object> countryInformation = SelectCountry((int)countryIndex);
+            Country country = (Country)countryInformation[0];
+            country.Person = SelectPresident((int)country.presidentID);
+            ViewBag.CountryIndex = (int)countryInformation[1];
+            
+            List<Object> peopleInformation = SelectPeople((int)countryIndex, 0);
+            ViewBag.people = (List<Person>)peopleInformation[0];
+            ViewBag.pageIndex = (int)peopleInformation[1];
+
+            List<Country> countries = SelectAllCountries();
+            ViewBag.CountriesList = new SelectList(countries, "id", "name");
 
             return View(country);
         }
@@ -145,9 +279,7 @@ namespace CountriesApp.Controllers
         }
 
         // POST: Countries/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        [HttpPost, ActionName("Delete")] [ValidateAntiForgeryToken] public ActionResult DeleteConfirmed(int id)
         {
             Country country = db.Countries.Find(id);
             db.Countries.Remove(country);
@@ -165,13 +297,45 @@ namespace CountriesApp.Controllers
         }
         #endregion
 
+        #region TravelMenues
+        [HttpPost] public ActionResult TravelCountries(int actualIndex, int sum)
+        {
+
+            return View("Index");
+        }
+        #endregion
+
+
         public ActionResult AllCountries()
         {
+            using (var conn = new SqlConnection(connectionInfo))
+            {
+                conn.Open();
+
+                using (var sqlTxn = conn.BeginTransaction(System.Data.IsolationLevel.Snapshot))
+                {
+                    try
+                    {
+                        var sqlCommand = new SqlCommand();
+                        sqlCommand.Connection = conn;
+                        sqlCommand.Transaction = sqlTxn;
+                        sqlCommand.CommandText = "SELECT * FROM dbo.People WHERE id < 0";
+                        sqlCommand.ExecuteNonQuery();
+
+                        sqlTxn.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        sqlTxn.Rollback();
+                    }
+                }
+            }
             ViewBag.ActualIndex = 0;
             ViewBag.PopulationIndex = 1;
 
-            Country country = db.Countries.Include(c => c.Person).First();
+            ViewBag.birthCountry = new SelectList(db.Countries, "id", "name");
 
+            Country country = db.Countries.Include(c => c.Person).First();
             return View(country);
         }
 
@@ -211,60 +375,11 @@ namespace CountriesApp.Controllers
             return View("AllCountries", country);
         }
 
-        /*public ActionResult ReadData(FormCollection data, int countryIndex)
+        [HttpPost] public string AddPerson([Bind(Include = "id,idNumber,firstName,lastName,birthdate,birthCountry")] Person person)
         {
-            Person person = new Person();
-            Country country = db.Countries.ToList()[countryIndex];
-
-            try
-            {
-                person.id = db.People.ToList().Count() + Country.TemporalPeople.Count();
-                person.firstName = data["newPersonName"];
-                person.lastName = data["newPersonLastName"];
-                person.birthdate = Convert.ToDateTime(data["newPersonBirthdate"]);
-                person.email = person.firstName + person.lastName + "@hotmail.com";
-                person.birthCountry = country.id;
-                person.residenceCountry = country.id;
-
-                ViewBag.ActualIndex = countryIndex;
-                country.AddTemporal(person);
-            }
-            catch (FormatException)
-            {
-
-            }
-            ViewBag.PopulationIndex = 1;
-            return View("AllCountries", country);
-        }*/
-
-        [HttpPost] public string AddPerson([Bind(Include = "id,idNumber,firstName,lastName,birthdate")] Person person) // string PersonName, string PersonLastName, string Birthdate, int countryIndex
-        {
-            return person.firstName + "  " + person.lastName;
+            person.residenceCountry = person.birthCountry;
+            return person.ToString();
         }
-
-        /*[HttpPost] public ActionResult DeleteTemporalPeople()
-        {
-            ViewBag.ActualIndex = 0;
-            ViewBag.PopulationIndex = 1;
-            Country.TemporalPeople = new List<Person>();
-            return View("AllCountries", db.Countries.First());
-        }*/
-
-        /*[HttpPost] public ActionResult InsertTemporalPeople()
-        {
-            Country country;
-
-            foreach (Person person in Country.TemporalPeople)
-                db.People.Add(person);
-
-            db.SaveChanges();
-
-            Country.TemporalPeople = new List<Person>();
-            ViewBag.ActualIndex = 0;
-            ViewBag.PopulationIndex = 1;
-            country = db.Countries.First();
-            return View("AllCountries", country);
-        }*/
 
         [HttpPost] public ActionResult AddFlag(Country country, HttpPostedFileBase flag1, int countryIndex)
         {
@@ -306,8 +421,6 @@ namespace CountriesApp.Controllers
 
         [HttpPost] public ActionResult Data(short sum)
         {
-            System.Diagnostics.Debug.WriteLine("HERE");
-            System.Diagnostics.Debug.WriteLine(ActualIndex + ":" + PopulationIndex);
             int actualCountry = ActualIndex;
             int actualPopulation = PopulationIndex;
             
@@ -335,11 +448,21 @@ namespace CountriesApp.Controllers
             {
                 country.SelectedPeople.Add(country.People1.ToList()[i]);
             }
-
-            System.Diagnostics.Debug.WriteLine("OUT");
-            System.Diagnostics.Debug.WriteLine(ActualIndex + ":" + PopulationIndex);
+            
             return View("PeopleList", country);
         }
 
+        [HttpPost] public ActionResult TravelPopulation(int countryIndex, int startPopulation, int sumPopulation)
+        {
+            List<Object> countryInformation = SelectCountry(countryIndex);
+            Country country = (Country)countryInformation[0];
+
+            List<Object> peopleInformation = SelectPeople(1, 1);//((int)countryIndex, startPopulation + sumPopulation);
+            ViewBag.people = (List<Person>)peopleInformation[0];
+            country.SelectedPeople = (List<Person>)peopleInformation[0];
+            ViewBag.pageIndex = (int)peopleInformation[1];
+
+            return View("PeopleList", country);
+        }
     }
 }

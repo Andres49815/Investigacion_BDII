@@ -35,35 +35,24 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
+    @for (int i = 0; i < 10; i++)
+    {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.idNumber)
+            @Html.DisplayFor(modelItem => Model.ToList()[i].idNumber)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.firstName)
+            @Html.DisplayFor(modelItem => Model.ToList()[i].firstName)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.lastName)
+            @Html.DisplayFor(modelItem => Model.ToList()[i].lastName)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.birthdate)
+            @Html.DisplayFor(modelItem => Model.ToList()[i].birthdate)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Country.name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Country1.name)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+            @Html.DisplayFor(modelItem => Model.ToList()[i].email)
         </td>
     </tr>
-}
-
+    }
 </table>

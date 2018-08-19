@@ -113,8 +113,10 @@
         <!-- People data order: id idNumber firstName lastName birthCountry residenceCountry birthdate email photo interview -->
 
         <h2>People</h2>
+        <button type="button" id="btFirst" class="btn btn-default"> Primeros </button>
         <button type="button" id="btAnteriores" class="btn btn-default"> Anteriores </button>
         <button type="button" id="btSiguientes" class="btn btn-default"> Siguientes </button>
+        <button type="button" id="btLast" class="btn btn-default"> Ultimos </button>
         <table id="refresh" class="table">
             <tr>
                 <th>
@@ -202,57 +204,6 @@
                 })
             </script>
         }
-
-        @*<table class="table">
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Person.firstName)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Person.lastName)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Person.Country)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Person.Country1)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Person.birthdate)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Person.email)
-                    </th>
-                </tr>
-
-                @foreach (var item in Model.Temporal_People())
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.firstName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.lastName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Country.name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Country1.name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.birthdate)
-                    </td>
-                    <th>
-                        @Html.DisplayFor(modelItem => item.email)
-                    </th>
-                </tr>
-        }
-            </table>*@
-        
-
-        <!-- Register new people -->
-        <!-- h2>Register People</!--h2 -->
         
         @using (Html.BeginForm("AddPerson", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form=data" }))
         {
@@ -262,12 +213,18 @@
             <fieldset>
                 <legend>Register People</legend>
                 
+                @{ 
+                    SelectList list = ViewBag.birthCountry;
+                }
+
                 @Html.LabelFor(p => person.firstName)
                 @Html.EditorFor(p => person.firstName)
                 @Html.LabelFor(p => person.lastName)
                 @Html.EditorFor(p => person.lastName)
                 @Html.LabelFor(p => person.birthdate)
                 @Html.EditorFor(p => person.birthdate)
+                @Html.LabelFor(p => person.birthCountry)
+                @Html.DropDownListFor(p => person.birthCountry, list)
                 <p>
                     <input type="submit" value="Add person" />
                 </p>
