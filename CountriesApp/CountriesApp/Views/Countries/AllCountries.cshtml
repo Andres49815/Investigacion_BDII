@@ -14,8 +14,10 @@
     <form name="frmCountries" id="frmCountries" method="post">
         <br />
         <div class="form-group row">
-            <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = -1 })'" class="btn btn-default"> Anterior </button>
-            <button type="button" onclick="location.href='@Url.Action("ChangeCountry", "Countries", new { actual = @ViewBag.ActualIndex, i = +1 })'" class="btn btn-default"> Siguiente </button>
+            <button type="button" onclick="location.href='@Url.Action("AllCountries", "Countries", new { countryIndex = 999, sum = 0 })'" class="btn btn-default"> First </button>
+            <button type="button" onclick="location.href='@Url.Action("AllCountries", "Countries", new { countryIndex = ViewBag.CountryIndex, sum = -1 })'" class="btn btn-default"> Previous </button>
+            <button type="button" onclick="location.href='@Url.Action("AllCountries", "Countries", new { countryIndex = ViewBag.CountryIndex, sum = +1 })'" class="btn btn-default"> Next </button>
+            <button type="button" onclick="location.href='@Url.Action("AllCountries", "Countries", new { countryIndex = -1, sum = 0 })'" class="btn btn-default"> Last </button>
         </div>
         
         <div class="container">
@@ -136,28 +138,24 @@
                 </th>
             </tr>
             @{
-                int start, end;
 
-                start = (ViewBag.PopulationIndex - 1) * 10;
-                end = (ViewBag.PopulationIndex) * 10;
-
-                for (int i = start; i < end && i < Model.People1.Count; i++)
+                foreach (CountriesApp.Models.Person person in Model.People1) // (int i = start; i < end && i < Model.People1.Count; i++)
                 {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => Model.People1.ToList()[i].firstName)
+                        @Html.DisplayFor(modelItem => person.firstName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => Model.People1.ToList()[i].lastName)
+                        @Html.DisplayFor(modelItem => person.lastName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => Model.People1.ToList()[i].birthdate)
+                        @Html.DisplayFor(modelItem => person.birthdate)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => Model.People1.ToList()[i].Country.name)
+                        @Html.DisplayFor(modelItem => person.Country.name)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => Model.People1.ToList()[i].email)
+                        @Html.DisplayFor(modelItem => person.email)
                     </td>
                 </tr>
                 }

@@ -306,36 +306,26 @@ namespace CountriesApp.Controllers
         #endregion
 
 
-        public ActionResult AllCountries()
+        public ActionResult AllCountries(int? countryIndex = 1, int sum = 0)
         {
-            using (var conn = new SqlConnection(connectionInfo))
-            {
-                conn.Open();
+            // Country Information
+            countryIndex += sum;
+            List<object> countryInformation = SelectCountry((int)countryIndex);
+            Country country = (Country)countryInformation[0];
+            ViewBag.CountryIndex = (int)countryInformation[1];
 
-                using (var sqlTxn = conn.BeginTransaction(System.Data.IsolationLevel.Snapshot))
-                {
-                    try
-                    {
-                        var sqlCommand = new SqlCommand();
-                        sqlCommand.Connection = conn;
-                        sqlCommand.Transaction = sqlTxn;
-                        sqlCommand.CommandText = "SELECT * FROM dbo.People WHERE id < 0";
-                        sqlCommand.ExecuteNonQuery();
+            // President Information
+            country.Person = SelectPresident((int)country.presidentID);
 
-                        sqlTxn.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        sqlTxn.Rollback();
-                    }
-                }
-            }
+            // Resident Information
+            List<object> peopleInformation = SelectPeople((int)countryIndex, 0);
+            country.People1 = (List<Person>)peopleInformation[0];
+            ViewBag.PeopleIndex = (int)peopleInformation[1];
+
             ViewBag.ActualIndex = 0;
             ViewBag.PopulationIndex = 1;
 
-            ViewBag.birthCountry = new SelectList(db.Countries, "id", "name");
-
-            Country country = db.Countries.Include(c => c.Person).First();
+            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
             return View(country);
         }
 
