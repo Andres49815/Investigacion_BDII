@@ -104,7 +104,46 @@ BEGIN
 	) offset ON (cntry.id = offset.id)
 	WHERE offset.id IS NULL
 END
+SELECT 45 % 10
 
+
+GO
+drop procedure SelectPeople
+CREATE PROCEDURE SelectPeople
+	@country	INTEGER,
+	@start		INTEGER
+AS
+BEGIN
+	DECLARE @count INTEGER
+	SELECT @count = COUNT(*) FROM dbo.Person WHERE residenceCountry = @country
+	IF (@start * 10 > @count)
+	BEGIN
+		SET @start = 0
+	END
+	IF (@start < 0)
+	BEGIN
+		SET @start = (@count - (@count % 10)) / 10
+	END
+
+	SELECT P1.id, P1.idNumber, P1.firstName, P1.lastName, P1.birthCountry, P1.residenceCountry, P1.birthdate, P1.email, P1.photo, P1.interview, @start AS idx
+	FROM
+	(
+		SELECT TOP (@start * 10 + 10) *
+		FROM dbo.Person
+		WHERE residenceCountry = @country
+		ORDER BY lastName ASC
+	) P1 LEFT OUTER JOIN
+	(
+		SELECT TOP (@start * 10) *
+		FROM dbo.Person
+		WHERE residenceCountry = @country
+		ORDER BY lastName ASC
+	) offset ON (P1.id = offset.id)
+	WHERE offset.id IS NULL
+END
+
+exec dbo.SelectPeople @country = 1, @start = 0
+select count(*) from dbo.Person where residenceCountry = 1
 exec dbo.SelectCountry @index = 1
-select id, name
-from dbo.Country
+
+select * from dbo.Country C INNER JOIN Person P ON(C.presidentID = P.id) WHERE presidentID = 153
