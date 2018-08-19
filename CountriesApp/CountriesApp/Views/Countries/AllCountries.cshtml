@@ -170,7 +170,7 @@
                     $.ajax({
                         type: "POST",
                         url: dataURL,
-                        data: {sum: "1"},
+                        data: {CountryIndex: "@ViewBag.CountryIndex", sum: "1"},
                         success: function (data)
                         {
                             $("#refresh").html(data);
@@ -189,7 +189,7 @@
                     $.ajax({
                         type: "POST",
                         url: dataURL,
-                        data: {sum: "-1"},
+                        data: {CountryIndex: "@ViewBag.CountryIndex", sum: "-1"},
                         success: function (data)
                         {
                             $("#refresh").html(data);

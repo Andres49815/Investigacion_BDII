@@ -14,7 +14,6 @@ namespace CountriesApp.Controllers
 {
     public class CountriesController : Controller
     {
-        private static int ActualIndex = 0;
         private static int PopulationIndex = 1;
         private CountriesEntities db = new CountriesEntities();
         private static string connectionInfo = "data source=ecRhin.ec.tec.ac.cr\\Estudiantes;initial catalog=Countries;persist security info=True;" +
@@ -322,6 +321,7 @@ namespace CountriesApp.Controllers
             country.People1 = (List<Person>)peopleInformation[0];
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
+            // Borrar
             ViewBag.ActualIndex = 0;
             ViewBag.PopulationIndex = 1;
 
@@ -409,35 +409,15 @@ namespace CountriesApp.Controllers
             return View("AllCountries", countryModel);
         }
 
-        [HttpPost] public ActionResult Data(short sum)
+        [HttpPost] public ActionResult Data(int CountryIndex, short sum)
         {
-            int actualCountry = ActualIndex;
-            int actualPopulation = PopulationIndex;
-            
+            Country country = (Country)SelectCountry(CountryIndex)[0];
 
-            List<Country> countries = db.Countries.Include(c => c.Person).ToList();
-            Country country;
-            int actualPopulationIndex;
+            PopulationIndex += sum;
 
-            ActualIndex = actualCountry;
-            country = countries[actualCountry];
-
-            actualPopulationIndex = actualPopulation + sum;
-
-            if (actualPopulationIndex == 0)
-                actualPopulationIndex = country.People1.Count() / 10 + 1;
-
-            if (country.People1.Count() < (actualPopulationIndex - 1) * 10)
-                actualPopulationIndex = 1;
-            PopulationIndex = actualPopulationIndex;
-
-            country.SelectedPeople = new List<Person>();
-            int start = (PopulationIndex - 1) * 10;
-            int end = (PopulationIndex) * 10;
-            for (int i = start; i < end && i < country.People1.Count; i++)
-            {
-                country.SelectedPeople.Add(country.People1.ToList()[i]);
-            }
+            List<object> peopleInformation = SelectPeople(CountryIndex, PopulationIndex);
+            country.SelectedPeople = (List<Person>)peopleInformation[0];
+            PopulationIndex = (int)peopleInformation[1];
             
             return View("PeopleList", country);
         }
@@ -447,7 +427,7 @@ namespace CountriesApp.Controllers
             List<Object> countryInformation = SelectCountry(countryIndex);
             Country country = (Country)countryInformation[0];
 
-            List<Object> peopleInformation = SelectPeople(1, 1);//((int)countryIndex, startPopulation + sumPopulation);
+            List<Object> peopleInformation = SelectPeople(1, 1);
             ViewBag.people = (List<Person>)peopleInformation[0];
             country.SelectedPeople = (List<Person>)peopleInformation[0];
             ViewBag.pageIndex = (int)peopleInformation[1];
