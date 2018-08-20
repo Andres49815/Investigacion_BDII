@@ -228,6 +228,12 @@
                 </p>
             </fieldset>
         }
+        @using (Html.BeginForm("SendCommit", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form=data" }))
+        {
+            <p>
+                <input type="submit" value="Commit" />
+            </p>
+        }
     </form>
 </body>
 </html>

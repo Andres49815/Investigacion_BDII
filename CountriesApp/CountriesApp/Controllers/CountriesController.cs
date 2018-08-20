@@ -322,7 +322,7 @@ namespace CountriesApp.Controllers
         [HttpPost] public ActionResult AddPerson([Bind(Include = "id,idNumber,firstName,lastName,birthdate,birthCountry")] Person person)
         {
             person.residenceCountry = person.birthCountry;
-            SQLTransactionManager.UploadPerson(person);
+            SQLTransactionManager.UploadPersonAsync(person);
 
             // Country Information
             List<object> countryInformation = SelectCountry(1);
@@ -339,6 +339,11 @@ namespace CountriesApp.Controllers
             
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
             return View("AllCountries", country);
+        }
+        [HttpPost] public string SendCommit()
+        {
+            SQLTransactionManager.SendCommit();
+            return "LUL";
         }
 
         [HttpPost] public ActionResult AddFlag(Country country, HttpPostedFileBase flag1, int countryIndex)
