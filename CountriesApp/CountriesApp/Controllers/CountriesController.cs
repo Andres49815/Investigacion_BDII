@@ -14,12 +14,12 @@ namespace CountriesApp.Controllers
 {
     public class CountriesController : Controller
     {
-        private static int PopulationIndex = 1;
+        private static int PopulationIndex = 0;
         private CountriesEntities db = new CountriesEntities();
         private static string connectionInfo = "data source=ecRhin.ec.tec.ac.cr\\Estudiantes;initial catalog=Countries;persist security info=True;" +
             "user id=anobando;password=anobando;MultipleActiveResultSets=True;App=EntityFramework";
 
-        #region ConnectionProcedures
+        #region Connection Procedures
         private static List<Country> SelectAllCountries()
         {
             SqlConnection connection = new SqlConnection(connectionInfo);
@@ -296,17 +296,11 @@ namespace CountriesApp.Controllers
         }
         #endregion
 
-        #region TravelMenues
-        [HttpPost] public ActionResult TravelCountries(int actualIndex, int sum)
-        {
-
-            return View("Index");
-        }
-        #endregion
-
-
         public ActionResult AllCountries(int? countryIndex = 1, int sum = 0)
         {
+            // Transactions
+            SQLTransactionManager.Instance();
+
             // Country Information
             countryIndex += sum;
             List<object> countryInformation = SelectCountry((int)countryIndex);
@@ -321,54 +315,30 @@ namespace CountriesApp.Controllers
             country.People1 = (List<Person>)peopleInformation[0];
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
-            // Borrar
-            ViewBag.ActualIndex = 0;
-            ViewBag.PopulationIndex = 1;
-
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
             return View(country);
         }
 
-        public ActionResult ChangeCountry(short actual, short i)
-        {
-            List<Country> countries = db.Countries.Include(c => c.Person).ToList();
-            Country country;
-
-            actual += i;
-            actual = actual < 0 ? (short)(countries.Count - 1) : (short)(actual == countries.Count ? 0 : actual);
-
-            ViewBag.ActualIndex = actual;
-            ViewBag.PopulationIndex = 1;
-
-            country = countries[actual];
-
-            return View("AllCountries", country);
-        }
-
-        public ActionResult TravelPopulation(short actualCountry, short actualPopulation, short sum)
-        {
-            List<Country> countries = db.Countries.Include(c => c.Person).ToList();
-            Country country;
-            int actualPopulationIndex;
-
-            ViewBag.ActualIndex = actualCountry;
-            country = countries[actualCountry];
-
-            actualPopulationIndex = actualPopulation + sum;
-
-            if (actualPopulationIndex == 0)
-                actualPopulationIndex = country.People1.Count() / 10 + 1;
-
-            if (country.People1.Count() < (actualPopulationIndex - 1) * 10)
-                actualPopulationIndex = 1;
-            ViewBag.PopulationIndex = actualPopulationIndex;
-            return View("AllCountries", country);
-        }
-
-        [HttpPost] public string AddPerson([Bind(Include = "id,idNumber,firstName,lastName,birthdate,birthCountry")] Person person)
+        [HttpPost] public ActionResult AddPerson([Bind(Include = "id,idNumber,firstName,lastName,birthdate,birthCountry")] Person person)
         {
             person.residenceCountry = person.birthCountry;
-            return person.ToString();
+            SQLTransactionManager.UploadPerson(person);
+
+            // Country Information
+            List<object> countryInformation = SelectCountry(1);
+            Country country = (Country)countryInformation[0];
+            ViewBag.CountryIndex = (int)countryInformation[1];
+
+            // President Information
+            country.Person = SelectPresident((int)country.presidentID);
+
+            // Resident Information
+            List<object> peopleInformation = SelectPeople(1, 0);
+            country.People1 = (List<Person>)peopleInformation[0];
+            ViewBag.PeopleIndex = (int)peopleInformation[1];
+            
+            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
+            return View("AllCountries", country);
         }
 
         [HttpPost] public ActionResult AddFlag(Country country, HttpPostedFileBase flag1, int countryIndex)
@@ -418,19 +388,6 @@ namespace CountriesApp.Controllers
             List<object> peopleInformation = SelectPeople(CountryIndex, PopulationIndex);
             country.SelectedPeople = (List<Person>)peopleInformation[0];
             PopulationIndex = (int)peopleInformation[1];
-            
-            return View("PeopleList", country);
-        }
-
-        [HttpPost] public ActionResult TravelPopulation(int countryIndex, int startPopulation, int sumPopulation)
-        {
-            List<Object> countryInformation = SelectCountry(countryIndex);
-            Country country = (Country)countryInformation[0];
-
-            List<Object> peopleInformation = SelectPeople(1, 1);
-            ViewBag.people = (List<Person>)peopleInformation[0];
-            country.SelectedPeople = (List<Person>)peopleInformation[0];
-            ViewBag.pageIndex = (int)peopleInformation[1];
 
             return View("PeopleList", country);
         }
