@@ -17,7 +17,7 @@ namespace CountriesApp.Models
         private static volatile SQLTransactionManager instance = null;
         //private static DbContextTransaction Transaction;
         private static string connectionInfo = "data source=ecRhin.ec.tec.ac.cr\\Estudiantes;initial catalog=Countries;persist security info=True;" +
-            "user id=anobando;password=anobando;MultipleActiveResultSets=True;App=EntityFramework";
+            "user id=anobando;password=anobando;MultipleActiveResultSets=False;App=EntityFramework";
         private static DbContext context;// = new DbContext(connectionInfo);
         private static SqlConnection connection;// = new SqlConnection(connectionInfo);
 
@@ -37,18 +37,28 @@ namespace CountriesApp.Models
         }
         #endregion
 
-        public static async System.Threading.Tasks.Task UploadPersonAsync(Person person)
+        public static void UploadPerson(Person person)
         {
-            SqlCommand command = new SqlCommand("dbo.InsertPerson", connection);
-            //command.Transaction = Transaction;
-            command.CommandType = System.Data.CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("@firstname", person.firstName);
-            command.Parameters.AddWithValue("@lastname", person.lastName);
-            command.Parameters.AddWithValue("@birthcountry", person.birthCountry);
-            command.Parameters.AddWithValue("@birthdate", person.birthdate);
+            SqlConnection connection = new SqlConnection(connectionInfo);
+            connection.Open();
+            SqlCommand command = new SqlCommand();
+            command.CommandText = "begin transaction; EXEC dbo.InsertPerson @firstname = '" + person.firstName + "', @lastname = '" + person.lastName + "', @birthcountry = "
+                + person.birthCountry.ToString() + ", @birthdate = '" + person.birthdate.Year.ToString() + "-" + person.birthdate.Month.ToString() + "-" +
+                person.birthdate.Day.ToString() + "'";
+            command.Connection = connection;
             command.ExecuteNonQuery();
-            context = new DbContext(connectionInfo);
-            var dbContextTransaction = context.Database.BeginTransaction();
+            connection.Close();
+
+
+            //SqlCommand command = new SqlCommand("dbo.InsertPerson", connection);
+            //command.CommandType = System.Data.CommandType.StoredProcedure;
+            //command.Parameters.AddWithValue("@firstname", person.firstName);
+            //command.Parameters.AddWithValue("@lastname", person.lastName);
+            //command.Parameters.AddWithValue("@birthcountry", person.birthCountry);
+            //command.Parameters.AddWithValue("@birthdate", person.birthdate);
+            //command.ExecuteNonQuery();
+            //context = new DbContext(connectionInfo);
+            //var dbContextTransaction = context.Database.BeginTransaction();
 
             ////try
             ////{

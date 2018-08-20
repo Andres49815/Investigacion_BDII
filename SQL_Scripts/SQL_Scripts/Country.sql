@@ -116,7 +116,7 @@ AS
 BEGIN
 	DECLARE @count INTEGER
 	SELECT @count = COUNT(*) FROM dbo.Person WHERE residenceCountry = @country
-	IF (@start * 10 > @count)
+	IF (@start * 10 > @count OR @start * 10 = @count)
 	BEGIN
 		SET @start = 0
 	END
@@ -144,6 +144,3 @@ END
 
 exec dbo.SelectPeople @country = 1, @start = 0
 select count(*) from dbo.Person where residenceCountry = 1
-exec dbo.SelectCountry @index = 1
-
-select * from dbo.Country C INNER JOIN Person P ON(C.presidentID = P.id) WHERE presidentID = 153

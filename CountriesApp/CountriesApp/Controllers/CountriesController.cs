@@ -322,7 +322,7 @@ namespace CountriesApp.Controllers
         [HttpPost] public ActionResult AddPerson([Bind(Include = "id,idNumber,firstName,lastName,birthdate,birthCountry")] Person person)
         {
             person.residenceCountry = person.birthCountry;
-            SQLTransactionManager.UploadPersonAsync(person);
+            SQLTransactionManager.UploadPerson(person);
 
             // Country Information
             List<object> countryInformation = SelectCountry(1);
