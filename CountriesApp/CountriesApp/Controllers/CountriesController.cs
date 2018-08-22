@@ -318,7 +318,6 @@ namespace CountriesApp.Controllers
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
             return View(country);
         }
-
         [HttpPost] public ActionResult AddPerson([Bind(Include = "id,idNumber,firstName,lastName,birthdate,birthCountry")] Person person)
         {
             person.residenceCountry = person.birthCountry;
@@ -345,7 +344,6 @@ namespace CountriesApp.Controllers
             SQLTransactionManager.SendCommit();
             return "LUL";
         }
-
         [HttpPost] public ActionResult AddFlag(Country country, HttpPostedFileBase flag1, int countryIndex)
         {
             Country countryModel = db.Countries.ToList()[countryIndex];
@@ -364,7 +362,6 @@ namespace CountriesApp.Controllers
             ViewBag.PopulationIndex = 1;
             return View("AllCountries", countryModel);
         }
-
         [HttpPost] public ActionResult AddAnthem(Country country, HttpPostedFileBase anthem1, int countryIndex)
         {
             Country countryModel = db.Countries.ToList()[countryIndex];
@@ -383,7 +380,6 @@ namespace CountriesApp.Controllers
             ViewBag.PopulationIndex = 1;
             return View("AllCountries", countryModel);
         }
-
         [HttpPost] public ActionResult Data(int CountryIndex, short sum)
         {
             Country country = (Country)SelectCountry(CountryIndex)[0];

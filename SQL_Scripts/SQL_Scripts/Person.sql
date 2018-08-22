@@ -69,3 +69,5 @@ select implicit_transactions from sys.databases where name = 'Country'
 SET implicit_commit OFF
 
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ
