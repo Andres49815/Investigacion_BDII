@@ -47,6 +47,7 @@ namespace CountriesApp.Models
         public static void ResetInstance()
         {
             instance = null;
+            instance = new SQLTransactionManager();
         }
     }
 }

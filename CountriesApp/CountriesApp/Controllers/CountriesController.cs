@@ -370,6 +370,7 @@ namespace CountriesApp.Controllers
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
+            SQLTransactionManager.ResetInstance();
             return View("AllCountries", country);
         }
         [HttpPost] public ActionResult AddFlag(Country country, HttpPostedFileBase flag1, int countryIndex)
