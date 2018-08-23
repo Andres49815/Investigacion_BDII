@@ -9,17 +9,15 @@ using System.Web;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Validation;
 
 namespace CountriesApp.Models
 {
     public class SQLTransactionManager
     {
         private static volatile SQLTransactionManager instance = null;
-        private static SQLTransactionManager Transaction;
-        private static string connectionInfo = "data source=ecRhin.ec.tec.ac.cr\\Estudiantes;initial catalog=Countries;persist security info=True;" +
-            "user id=anobando;password=anobando;MultipleActiveResultSets=False;App=EntityFramework";
-        private static DbContext context;// = new DbContext(connectionInfo);
-        private static SqlConnection connection;// = new SqlConnection(connectionInfo);
+        private static CountriesEntities db;
+        private static DbContextTransaction Transaction;
 
         #region Contructor
         public static SQLTransactionManager Instance()
@@ -30,30 +28,25 @@ namespace CountriesApp.Models
         }
         private SQLTransactionManager()
         {
-            connection = new SqlConnection(connectionInfo);
-            connection.Open();
-            SqlTransaction transaction = connection.BeginTransaction(System.Data.IsolationLevel.RepeatableRead);
-
-            //Transaction = context.Database.BeginTransaction();
+            db = new CountriesEntities();
+            Transaction = db.Database.BeginTransaction(System.Data.IsolationLevel.RepeatableRead);
         }
         #endregion
 
         public static void UploadPerson(Person person)
         {
-            SqlConnection connection = new SqlConnection(connectionInfo);
-            connection.Open();
-            SqlCommand command = new SqlCommand();
-            command.CommandText = "EXEC dbo.InsertPerson @firstname = '" + person.firstName + "', @lastname = '" + person.lastName + "', @birthcountry = "
-                + person.birthCountry.ToString() + ", @birthdate = '" + person.birthdate.Year.ToString() + "-" + person.birthdate.Month.ToString() + "-" +
-                person.birthdate.Day.ToString() + "'";
-            command.Connection = connection;
-            command.ExecuteNonQuery();
-            connection.Close();
+            db.People.Add(person);
         }
 
         public static void SendCommit()
         {
-            //Transaction.Commit();
+            db.SaveChanges();
+            Transaction.Commit();
+        }
+
+        public static void ResetInstance()
+        {
+            instance = null;
         }
     }
 }
@@ -176,3 +169,20 @@ namespace CountriesApp.Models
 //        //}
 //    }
 //}
+
+//db.SaveChanges();
+//Transaction.Commit();
+
+//SqlConnection connection = new SqlConnection(connectionInfo);
+//connection.Open();
+//SqlCommand command = new SqlCommand();
+//command.CommandText = "EXEC dbo.InsertPerson @firstname = '" + person.firstName + "', @lastname = '" + person.lastName + "', @birthcountry = "
+//    + person.birthCountry.ToString() + ", @birthdate = '" + person.birthdate.Year.ToString() + "-" + person.birthdate.Month.ToString() + "-" +
+//    person.birthdate.Day.ToString() + "'";
+//command.Connection = connection;
+//command.ExecuteNonQuery();
+//connection.Close();
+
+//connection = new SqlConnection(connectionInfo);
+//connection.Open();
+//Transaction = context.Database.BeginTransaction();

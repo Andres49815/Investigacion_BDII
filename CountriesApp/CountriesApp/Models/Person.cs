@@ -49,7 +49,9 @@ namespace CountriesApp.Models
                 "Cedula: " + idNumber.ToString() + "\n" +
                 "Nacimiento: " + birthdate.ToString() + "\n" +
                 "Pais de nacimiento: " + birthCountry.ToString() + "\n" +
-                "Pais de residencia: " + residenceCountry.ToString();
+                "Pais de residencia: " + residenceCountry.ToString() + "\n" +
+                "Email: " + email + "\n" + 
+                "id: " + id.ToString();
         }
     }
 }

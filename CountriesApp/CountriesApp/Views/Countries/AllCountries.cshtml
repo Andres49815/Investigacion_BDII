@@ -34,11 +34,11 @@
                 <div class="col-xs-5">
                     @if (Model.flag == null)
                     {
-                        using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.CountryIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
 
                         }
-                        using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.CountryIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
                         <fieldset>
                             <input type="file" name="test" />
