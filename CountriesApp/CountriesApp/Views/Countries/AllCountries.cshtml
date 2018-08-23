@@ -19,7 +19,7 @@
             <button type="button" onclick="location.href='@Url.Action("AllCountries", "Countries", new { countryIndex = ViewBag.CountryIndex, sum = +1 })'" class="btn btn-default"> Next </button>
             <button type="button" onclick="location.href='@Url.Action("AllCountries", "Countries", new { countryIndex = -1, sum = 0 })'" class="btn btn-default"> Last </button>
         </div>
-        
+
         <div class="container">
             <div class="col-xs-5">
                 <h1> @Model.name</h1>
@@ -28,7 +28,7 @@
                 <h1>@Html.DisplayNameFor(model => model.anthem)</h1>
             </div>
         </div>
-        
+
         <div class="container">
             <div class="row">
                 <div class="col-xs-5">
@@ -40,10 +40,10 @@
                         }
                         using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.CountryIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
-                        <fieldset>
-                            <input type="file" name="test" />
-                            <input type="submit" value="AddFlag" />
-                        </fieldset>
+                            <fieldset>
+                                <input type="file" name="test" />
+                                <input type="submit" value="AddFlag" />
+                            </fieldset>
                         }
                     }
                     else
@@ -109,7 +109,7 @@
                 {
                     <label style="color:red">Sin presidente asignado</label>
                 }
-                }
+            }
         </div>
         <!-- Population Info -->
         <!-- People data order: id idNumber firstName lastName birthCountry residenceCountry birthdate email photo interview -->
@@ -141,26 +141,26 @@
 
                 foreach (CountriesApp.Models.Person person in Model.People1) // (int i = start; i < end && i < Model.People1.Count; i++)
                 {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => person.firstName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => person.lastName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => person.birthdate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => person.Country.name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => person.email)
-                    </td>
-                </tr>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => person.firstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => person.lastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => person.birthdate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => person.Country.name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => person.email)
+                        </td>
+                    </tr>
                 }
             }
-        
+
         </table>
         @section scripts{
             <script>
@@ -202,7 +202,7 @@
                 })
             </script>
         }
-        
+
         @using (Html.BeginForm("AddPerson", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form=data" }))
         {
             CountriesApp.Models.Person person;
@@ -210,8 +210,8 @@
             person = new CountriesApp.Models.Person();
             <fieldset>
                 <legend>Register People</legend>
-                
-                @{ 
+
+                @{
                     SelectList list = ViewBag.birthCountry;
                 }
 
@@ -228,12 +228,20 @@
                 </p>
             </fieldset>
         }
-        @using (Html.BeginForm("SendCommit", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form=data" }))
+        @using (Html.BeginForm("SendCommit", "Countries", FormMethod.Post, new { enctype = "multipart/form=data" }))
         {
             <p>
                 <input type="submit" value="Commit" />
             </p>
         }
+        @using (Html.BeginForm("Rollback", "Countries", FormMethod.Post, new { enctype = "multipart/form=data" }))
+        {
+            <P>
+                <input type="submit" value="Rollback" />
+            </P>
+        }
+        @Html.ActionLink("Consulta 1", "") |
+        @Html.ActionLink("Consulta 2", "")
     </form>
 </body>
 </html>

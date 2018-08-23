@@ -103,4 +103,22 @@ BEGIN
 		FROM dbo.Country
 	) offset ON (cntry.id = offset.id)
 	WHERE offset.id IS NULL
-END
+END GO
+
+CREATE PROCEDURE [dbo].[UpdateFlag]
+	@CountryId	INTEGER,
+	@Flag		VARBINARY(MAX)
+AS BEGIN
+	UPDATE dbo.Country SET flag = @Flag WHERE id = @CountryId
+END GO
+
+CREATE PROCEDURE [dbo].[UpdateAnthem]
+	@CountryID	INTEGER,
+	@Anthem		VARBINARY(MAX)
+AS BEGIN
+	UPDATE dbo.Country SET anthem = @Anthem WHERE id = @CountryID
+END GO
+
+EXEC TotalPeople
+
+EXEC dbo.CountryInfo

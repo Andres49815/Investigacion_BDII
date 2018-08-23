@@ -44,8 +44,20 @@ namespace CountriesApp.Models
             Transaction.Commit();
         }
 
+        public static void Rollback()
+        {
+            db.Database.CurrentTransaction.Rollback();
+        }
+
         public static void ResetInstance()
         {
+            instance = null;
+            instance = new SQLTransactionManager();
+        }
+        public static void EndTransaction(bool isRollback)
+        {
+            if (isRollback)
+                db.Database.CurrentTransaction.Rollback();
             instance = null;
             instance = new SQLTransactionManager();
         }
