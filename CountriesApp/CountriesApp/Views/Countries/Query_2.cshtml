@@ -9,37 +9,30 @@
     <meta name="viewport" uiactions="expand" content="width=device-width" />
 </head>
 <body>
+    @Html.ActionLink("Previous", "Query_2", new { Year = ViewBag.Year, sum = -1 }) | @Html.ActionLink("Previous", "Query_2", new { Year = ViewBag.Year, sum = +1 })
     <form name="Query_2" id="Query_2" method="post">
-
-        @{ 
-            int i = 0;
-            CountriesApp.Models.TotalPeople_Q[] ar = Model.ToArray();
-
-            for (CountriesApp.Models.TotalPeople_Q item = ar[i]; item.BirthYear != -1; item = ar[++i])
-            {
-                <h2>@item.BirthYear</h2>
-                <table class="table">
+        @try
+        {
+            <h2>@Model.First().BirthYear</h2>
+            <table class="table">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.CountryName)</th>
+                    <th>@Html.DisplayNameFor(model => model.PeopleBorned)</th>
+                </tr>
+                @foreach (var item in Model)
+                {
                     <tr>
-                        <th></th>
-                        <th>@Html.DisplayNameFor(model => model.CountryName)</th>
-                        <th>@Html.DisplayNameFor(model => model.PeopleBorned)</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                    @while (!item.IsTotal)
-                    {
-                        item = ar[++i];
-                    <tr>
-                        <td></td>
                         <td>@Html.DisplayFor(modelItem => item.CountryName)</td>
                         <td>@Html.DisplayFor(modelItem => item.PeopleBorned)</td>
-                        <td></td>
-                        <td></td>
                     </tr>
-                    }
-                </table>
-            }
+                }
+            </table>
         }
+        catch (InvalidOperationException)
+        {
+            <h2 style="color:red">No births this year</h2>
+        }
+
     </form>
 </body>
 </html>

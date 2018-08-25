@@ -49,9 +49,19 @@ namespace CountriesApp.Controllers
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
             return View(country);
         }
-        public ActionResult Query_2()
+        public ActionResult Query_2(int? Year = 1960, int? sum = 0)
         {
-            List<TotalPeople_Q> result = TotalPeople();
+            Year += sum;
+            if (Year < 1960)
+            {
+                Year = 2018;
+            }
+            if (Year > 2018)
+            {
+                Year = 1960;
+            }
+            List<TotalPeople_Q> result = TotalPeople((int)Year);
+            ViewBag.Year = Year;
             return View(result);
         }
         #endregion
@@ -252,7 +262,7 @@ namespace CountriesApp.Controllers
             connection.Close();
             return query;
         }
-        private List<TotalPeople_Q> TotalPeople()
+        private List<TotalPeople_Q> TotalPeople(int Year)
         {
             int BirthYear, PeopleBorned;
             string CountryName;
@@ -265,6 +275,7 @@ namespace CountriesApp.Controllers
             {
                 command.CommandTimeout = 0;
                 command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@year", Year);
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     if (reader != null)
