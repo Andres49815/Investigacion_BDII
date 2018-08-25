@@ -1,0 +1,45 @@
+﻿@model IEnumerable<CountriesApp.Models.TotalPeople_Q>
+
+@{
+    ViewBag.Title = "Query_2";
+}
+
+<html>
+<head>
+    <meta name="viewport" uiactions="expand" content="width=device-width" />
+</head>
+<body>
+    <form name="Query_2" id="Query_2" method="post">
+
+        @{ 
+            int i = 0;
+            CountriesApp.Models.TotalPeople_Q[] ar = Model.ToArray();
+
+            for (CountriesApp.Models.TotalPeople_Q item = ar[i]; item.BirthYear != -1; item = ar[++i])
+            {
+                <h2>@item.BirthYear</h2>
+                <table class="table">
+                    <tr>
+                        <th></th>
+                        <th>@Html.DisplayNameFor(model => model.CountryName)</th>
+                        <th>@Html.DisplayNameFor(model => model.PeopleBorned)</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    @while (!item.IsTotal)
+                    {
+                        item = ar[++i];
+                    <tr>
+                        <td></td>
+                        <td>@Html.DisplayFor(modelItem => item.CountryName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PeopleBorned)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    }
+                </table>
+            }
+        }
+    </form>
+</body>
+</html>

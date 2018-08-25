@@ -185,6 +185,7 @@
       <DependentUpon>Countries_Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SQLTransactionManager.cs" />
+    <Compile Include="Models\TotalPeople_Q.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SoundPlayer.aspx.cs">
       <DependentUpon>SoundPlayer.aspx</DependentUpon>
@@ -265,6 +266,7 @@
     <Content Include="Views\People\Edit.cshtml" />
     <Content Include="Views\People\Index.cshtml" />
     <Content Include="Views\Countries\AllCountries.cshtml" />
+    <Content Include="Views\Countries\Query_2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
