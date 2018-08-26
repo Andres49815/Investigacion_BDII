@@ -122,6 +122,9 @@
         <table id="refresh" class="table">
             <tr>
                 <th>
+                    @Html.DisplayNameFor(model => model.Person.photo)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.Person.firstName)
                 </th>
                 <th>
@@ -136,19 +139,47 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Person.email)
                 </th>
+                @*<th>
+            @Html.DisplayNameFor(model => model.Person.interview)
+        </th>*@
                 <th>
-                    @Html.DisplayNameFor(model => model.Person.photo)
+                    Set President
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Person.interview)
+                    Delete
                 </th>
-
             </tr>
             @{
 
                 foreach (CountriesApp.Models.Person person in Model.People1) // (int i = start; i < end && i < Model.People1.Count; i++)
                 {
             <tr>
+                <td>
+                    @{ var photo = person.photo; }
+                    @if (photo == null)
+                    {
+                        using (Html.BeginForm("AddPhoto", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+
+                        }
+                        using (Html.BeginForm("AddPhoto", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            <fieldset>
+                                <input type="file" name="test" />
+                                <input type="submit" value="AddPhoto" class="btn btn-sm" />
+                            </fieldset>
+                        }
+                    }
+                    else
+                    {
+                        var base64 = Convert.ToBase64String(photo);
+                        var imgsrc = string.Format("data:audio/mpeg;base64,{0}", base64);
+                        <div class="col-md-6 col-xs-6">
+                            <img src="@imgsrc" class="img-responsive" height="100" width="100" />
+                        </div>
+                    }
+
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => person.firstName)
                 </td>
@@ -164,58 +195,46 @@
                 <td>
                     @Html.DisplayFor(modelItem => person.email)
                 </td>
+                @*<td>
+            @{ var interview = person.interview; }
+            @if (interview == null)
+            {
+                using (Html.BeginForm("AddInterview", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+
+                }
+                using (Html.BeginForm("AddInterview", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <fieldset>
+                        <input type="file" name="test" />
+                        <input type="submit" value="Add interview" class="btn btn-sm" />
+                    </fieldset>
+                }
+            }
+            else
+            {
+                var base64 = Convert.ToBase64String(person.interview);
+                var soundsrc = string.Format("data:video/mp4;base64,{0}", base64);
+                <video controls="" autoplay="" preload="auto" name="media" id="player" class="col-md-12 col-xs-12">
+                    <source src="@soundsrc" type="video/mp4">
+                </video>
+            }
+        </td>*@
+                @if (person.CanBePresident())
+                {
+                    <td>
+                        @Html.ActionLink("Set President", "SetPresident", new { countryID = Model.id, president = person.id })
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @Html.Display("Can't")
+                    </td>
+                }
                 <td>
-                    @{var photo = person.photo;}
-                    @if (photo == null)
-                    {
-                        using (Html.BeginForm("AddPhoto", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-                        {
-
-                        }
-                        using (Html.BeginForm("AddPhoto", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-                        {
-                            <fieldset>
-                                <input type="file" name="test" />
-                                <input type="submit" value="AddPhoto" class="btn btn-sm"/>
-                            </fieldset>
-                        }
-                    }
-                    else
-                    {
-                        var base64 = Convert.ToBase64String(photo);
-                        var imgsrc = string.Format("data:audio/mpeg;base64,{0}", base64);
-                            <div class="col-md-6 col-xs-6">
-                                <img src="@imgsrc" class="img-responsive" height="100" width="100" />
-                            </div>
-                    }
-
+                    @Html.ActionLink("Delete", "DeletePerson", new { id = person.id })
                 </td>
-                <td>
-                    @{var interview = person.interview;}
-                    @if (interview == null)
-                    {
-                        using (Html.BeginForm("AddInterview", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-                        {
-
-                        }
-                        using (Html.BeginForm("AddInterview", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-                        {
-                            <fieldset>
-                                <input type="file" name="test" />
-                                <input type="submit" value="Add interview" class="btn btn-sm"/>
-                            </fieldset>
-                        }
-                    }
-                    else
-                    {
-                        var base64 = Convert.ToBase64String(person.interview);
-                        var soundsrc = string.Format("data:video/mp4;base64,{0}", base64);
-                        <video controls="" autoplay="" preload="auto" name="media" id="player" class="col-md-12 col-xs-12" >
-                            <source src="@soundsrc" type="video/mp4">
-                        </video>
-                    }
-                </td>
-
             </tr>
                 }
             }

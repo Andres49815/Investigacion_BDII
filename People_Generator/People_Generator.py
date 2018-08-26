@@ -4,6 +4,27 @@ Program to generate SQL-Scripts for the countries Application
 
 import random
 
+file_names = open("C:\\Users\\Lenovo\Desktop\\Names.txt", "r")
+file_lastnames = open("C:\\Users\\Lenovo\Desktop\\LastNames.txt", "r")
+
+file_sql = open("C:\\Users\\Lenovo\Desktop\\sql_script.txt", "w")
+
+names_list =  file_names.readlines()
+id_number = 0
+for i in range(0, len(names_list), 2):
+    name = names_list[i]
+    sql_instruction = "INSERT INTO dbo.Names VALUES(" + str(id_number) + ", '" + name[ : len(name) - 2] + "')"
+    file_sql.write(sql_instruction + "\n")
+    id_number += 1
+
+lastnames_list =  file_lastnames.readlines()
+id_number = 0
+for i in range(0, len(lastnames_list), 2):
+    lastname = lastnames_list[i]
+    sql_instruction = "INSERT INTO dbo.LastNames VALUES(" + str(id_number) + ", '" + lastname[ : len(lastname) - 2] + "')"
+    file_sql.write(sql_instruction + "\n")
+    id_number += 1
+
 def Generate_People(countries_len, people_per_country, residence_probability):
 
     def generate_name(element_list, len_list):
@@ -16,8 +37,8 @@ def Generate_People(countries_len, people_per_country, residence_probability):
         day = str(random.randint(1, 28))
         return year + month + day
 
-    names_file = open("Files\\Names.txt", "r")
-    last_names_file = open("Files\\LastNames.txt", "r")
+    names_file = open("C:\\Users\\Lenovo\\Desktop\\Names.txt", "r")
+    last_names_file = open("C:\\Users\\Lenovo\Desktop\\LastNames.txt", "r")
 
     names_list = names_file.readlines()
     last_names_list = last_names_file.readlines()

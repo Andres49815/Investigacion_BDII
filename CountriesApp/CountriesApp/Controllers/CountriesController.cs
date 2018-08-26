@@ -329,7 +329,7 @@ namespace CountriesApp.Controllers
                             {
                                 CountryName = (string)reader["CountryName"];
                             }
-                            catch (InvalidCastException e)
+                            catch (InvalidCastException)
                             {
                                 CountryName = "";
                             }
@@ -536,7 +536,53 @@ namespace CountriesApp.Controllers
 
             return View("PeopleList", country);
         }
+        #endregion
+        #region Options
+        public ActionResult DeletePerson(int id)
+        {
+            Person person = db.People.Find(id);
+            db.People.Remove(person);
+            db.SaveChanges();
 
+            // Country Information
+            List<object> countryInformation = SelectCountry(1);
+            Country country = (Country)countryInformation[0];
+            ViewBag.CountryIndex = (int)countryInformation[1];
+
+            // President Information
+            country.Person = SelectPresident((int)country.presidentID);
+
+            // Resident Information
+            List<object> peopleInformation = SelectPeople(1, 0);
+            country.People1 = (List<Person>)peopleInformation[0];
+            ViewBag.PeopleIndex = (int)peopleInformation[1];
+
+            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
+            return View("AllCountries", country);
+
+        }
+        public ActionResult SetPresident(int countryID, int president)
+        {
+            Country country = db.Countries.Find(countryID);
+            country.presidentID = president;
+            db.SaveChanges();
+
+            // Country Information
+            List<object> countryInformation = SelectCountry(1);
+            Country c = (Country)countryInformation[0];
+            ViewBag.CountryIndex = (int)countryInformation[1];
+
+            // President Information
+            c.Person = SelectPresident((int)c.presidentID);
+
+            // Resident Information
+            List<object> peopleInformation = SelectPeople(1, 0);
+            c.People1 = (List<Person>)peopleInformation[0];
+            ViewBag.PeopleIndex = (int)peopleInformation[1];
+
+            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
+            return View("AllCountries", c);
+        }
+        #endregion
     }
-    #endregion
 }
