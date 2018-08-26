@@ -15,14 +15,14 @@ CREATE TABLE Country
 	flag		VARBINARY(MAX)			DEFAULT(NULL),
 	anthem		VARBINARY(MAX)			DEFAULT(NULL)
 )
-
+CREATE TABLE 
 -- Procedures
 go
 /**
  * Update Population
  * Recalculate the population for each country
  */
-ALTER PROCEDURE dbo.updatePopulation AS
+CREATE PROCEDURE dbo.updatePopulation AS
 BEGIN
 	UPDATE dbo.Country SET population = 0
 	-- Cursor to travel the Person Table
@@ -55,7 +55,7 @@ go
  * Set up presidents in order to assign president from the same nationality and with a 31
  * years and up
  */
-ALTER PROCEDURE dbo.setPresidents AS
+CREATE PROCEDURE dbo.setPresidents AS
 BEGIN
 	-- Counter Regulator
 	DECLARE	@counter		INTEGER
@@ -75,4 +75,50 @@ BEGIN
 	END
 END
 
--- Triggers
+GO
+
+CREATE PROCEDURE [dbo].SelectCountry
+	@index	INTEGER
+AS
+BEGIN
+	-- Index Off set
+	IF (@index > (SELECT COUNT(*) FROM dbo.Country))
+	BEGIN
+		SET @index = 1
+	END
+	IF (@index < 1)
+	BEGIN
+		SELECT @index = COUNT(*) FROM dbo.Country
+	END
+
+	-- SELECT
+	SELECT cntry.id, cntry.name, cntry.area, cntry.population, cntry.flag, cntry.anthem, cntry.presidentID, @index AS idx
+	FROM
+	(
+		SELECT TOP (@index) *
+		FROM dbo.Country
+	) cntry LEFT OUTER JOIN
+	(
+		SELECT TOP (@index - 1) *
+		FROM dbo.Country
+	) offset ON (cntry.id = offset.id)
+	WHERE offset.id IS NULL
+END GO
+
+CREATE PROCEDURE [dbo].[UpdateFlag]
+	@CountryId	INTEGER,
+	@Flag		VARBINARY(MAX)
+AS BEGIN
+	UPDATE dbo.Country SET flag = @Flag WHERE id = @CountryId
+END GO
+
+CREATE PROCEDURE [dbo].[UpdateAnthem]
+	@CountryID	INTEGER,
+	@Anthem		VARBINARY(MAX)
+AS BEGIN
+	UPDATE dbo.Country SET anthem = @Anthem WHERE id = @CountryID
+END GO
+
+EXEC TotalPeople
+
+EXEC dbo.CountryInfo

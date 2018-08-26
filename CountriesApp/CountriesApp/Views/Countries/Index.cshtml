@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CountriesApp.Models.Country>
+﻿@model CountriesApp.Models.Country
 
 @{
     ViewBag.Title = "Index";
@@ -6,58 +6,200 @@
 
 <h2>Index</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.area)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.population)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.flag)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.anthem)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Person)
-        </th>
-        <th></th>
-    </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.area)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.population)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.flag)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.anthem)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Person.firstName)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.id })
-        </td>
-    </tr>
-}
+<html>
+<head>
+    <meta name="viewport" uiactions="expand" content="width=device-width" />
+</head>
+<body>
+    <!--  Country data order: id name area population flag anthem presidentID -->
+    <form name="frmCountry" id="frmCountry" method="post">
+        <br />
+        <div class="form-group row">
+            <button type="button" onclick="location.href ='@Url.Action("Index", "Countries")'"> First </button>
+            <button type="button" onclick="location.href ='@Url.Action("Index", "Countries", new { countryIndex = @ViewBag.CountryIndex, sum = -1 })'"> Previous </button>
+            <button type="button" onclick="location.href ='@Url.Action("Index", "Countries", new { countryIndex = @ViewBag.CountryIndex, sum = +1 })'"> Next </button>
+            <button type="button" onclick="location.href ='@Url.Action("Index", "Countries", new { countryIndex = -1, sum = 0 })'"> Last </button>
+        </div>
+        <div class="container">
+            <div class="col-xs-5">
+                <h1>@Model.name</h1>
+            </div>
+            <div class="col-xs-6">
+                <h1>@Html.DisplayNameFor(model => model.anthem)</h1>
+            </div>
+        </div>
 
-</table>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-5">
+                    @if (Model.flag == null)
+                    {
+                        using (Html.BeginForm("AddFlag", "Countries", new { }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+
+                        }
+                        using (Html.BeginForm("AddFlag", "Countries", new { }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            <fieldset>
+                                <input type="file" name="test" />
+                                <input type="submit" value="AddFlag" />
+                            </fieldset>
+                        }
+                    }
+                    else
+                    {
+                        var base64 = Convert.ToBase64String(Model.flag);
+                        var imgsrc = string.Format("data:image/png;base64,{0}", base64);
+                        <div class="col-md-6 col-xs-6">
+                            <img src="@imgsrc" class="img-responsive" height="100" width="200" />
+                        </div>
+                    }
+                </div>
+                <div class="col-xs-6">
+                    <div class="row">
+                        @if (Model.anthem == null)
+                        {
+                            using (Html.BeginForm("AddAnthem", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+
+                            }
+                            using (Html.BeginForm("AddAnthem", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                                <fieldset>
+                                    <input type="file" name="test" />
+                                    <input type="submit" value="AddAnthem" />
+                                </fieldset>
+                            }
+                        }
+                        else
+                        {
+                            var base64 = Convert.ToBase64String(Model.anthem);
+                            var soundsrc = string.Format("data:audio/mpeg;base64,{0}", base64);
+                            <audio controls="" autoplay="" name="media" id="player">
+                                <source src="@soundsrc" type="audio/mpeg">
+                            </audio>
+                        }
+                    </div>
+                    <div class="row">
+                        <div class="container">
+                            <div class="col-xs-2">
+                                <h3> @Html.DisplayNameFor(model => model.population)    <b style="color:forestgreen"> @Html.DisplayFor(model => model.population)</b></h3>
+                                <h3> @Html.DisplayNameFor(model => model.area)    <b style="color:forestgreen"> @Html.DisplayFor(model => model.area)</b></h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br />
+
+        <!-- President Information -->
+        <h2> President </h2>
+        @try
+        {
+            string forException = Model.Person.firstName;
+
+            <label for="presidentName" class="col-sm-2 col-form-label">Presidente:</label>
+            <input type="text" class="form-control" id="pName" value="@Model.Person.firstName @Model.Person.lastName" placeholder="@Model.name" disabled />
+            <label for="presidentBirthdate" class="col-sm-2 col-form-label">Fecha de Nacimiento:</label>
+            <input type="text" class="form-control" id="pBirthdate" value="@Model.Person.birthdate" placeholder="@Model.Person.birthdate" disabled />
+        }
+        catch (NullReferenceException)
+        {
+            <label style="color:red">Sin presidente asignado</label>
+        }
+
+        <!-- Population Info -->
+        <h2>People</h2>
+        <button type="button" id="btFirst" class="btn btn-default"> Primeros </button>
+        <button type="button" id="btAnteriores" class="btn btn-default"> Anteriores </button>
+        <button type="button" id="btNextPopulation" class="btn btn-default"> Siguientes </button>
+        <button type="button" id="btLast" class="btn btn-default"> Ultimos </button>
+        <table id="refresh" class="table">
+            @{
+                IEnumerable<CountriesApp.Models.Person> people = (IEnumerable<CountriesApp.Models.Person>)ViewBag.people;
+                CountriesApp.Models.Person _person = new CountriesApp.Models.Person();
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(p => _person.firstName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(p => _person.lastName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(p => _person.birthdate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(p => _person.email)
+                    </th>
+                </tr>
+
+                foreach (var prsn in people)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(p => prsn.firstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(p => prsn.lastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(p => prsn.birthdate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(p => prsn.email)
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+        @section scripts{
+            <script>
+                $("#btNextPopulation").click(function ()
+                {
+                    var dataURL = "@Url.Action("TravelPopulation", "Countries")";
+                    $.ajax({
+                        type: "POST",
+                        url: dataURL,
+                        data: { countryIndex: "1", startPopulation: "0", sumPopulation: "1" },
+                        succes: function (data)
+                        {
+                            $("#refresh").html(data);
+                        },
+                        error: function errorFunc()
+                        {
+                            alert('error');
+                        }
+                    })
+                })
+            </script>
+        }
+        @using (Html.BeginForm("AddPerson", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form=data" }))
+        {
+            CountriesApp.Models.Person person;
+
+            person = new CountriesApp.Models.Person();
+            <fieldset>
+                <legend>Register People</legend>
+                @{
+                    SelectList list = ViewBag.CountriesList;
+                }
+
+                @Html.LabelFor(p => person.firstName)
+                @Html.EditorFor(p => person.firstName)
+                @Html.LabelFor(p => person.lastName)
+                @Html.EditorFor(p => person.lastName)
+                @Html.LabelFor(p => person.birthdate)
+                @Html.EditorFor(p => person.birthdate)
+                @Html.LabelFor(p => person.birthCountry)
+                @Html.DropDownListFor(p => person.birthCountry, list)
+                <p>
+                    <input type="submit" value="Add Person" />
+                </p>
+            </fieldset>
+        }
+    </form>
+</body>
+</html>
