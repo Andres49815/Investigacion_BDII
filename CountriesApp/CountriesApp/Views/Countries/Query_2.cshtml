@@ -9,7 +9,7 @@
     <meta name="viewport" uiactions="expand" content="width=device-width" />
 </head>
 <body>
-    @Html.ActionLink("Previous", "Query_2", new { Year = ViewBag.Year, sum = -1 }) | @Html.ActionLink("Previous", "Query_2", new { Year = ViewBag.Year, sum = +1 })
+    @Html.ActionLink("Previous", "Query_2", new { Year = ViewBag.Year, sum = -1 }) | @Html.ActionLink("Next", "Query_2", new { Year = ViewBag.Year, sum = +1 })
     <form name="Query_2" id="Query_2" method="post">
         @try
         {

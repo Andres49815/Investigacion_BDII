@@ -1,0 +1,33 @@
+﻿@model IEnumerable<CountriesApp.Models.CountryInfo_Q>
+
+@{
+    ViewBag.Title = "Query_1";
+}
+
+<html>
+<head>
+    <meta name="viewport" uiactions="expand" content="width=device-width" />
+</head>
+<body>
+    <form name="Query_1" id="Query_1" method="post">
+        <table class="tab-content">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.CountryName)</th>
+                <th>@Html.DisplayNameFor(model => model.AvarageAge)</th>
+                <th>@Html.DisplayNameFor(model => model.Population)</th>
+            </tr>
+            @foreach (CountriesApp.Models.CountryInfo_Q item in Model)
+            {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.CountryName)</td>
+                <td>@Html.DisplayFor(modelItem => item.AvarageAge)</td>
+                <td>@Html.DisplayFor(modelItem => item.Population)</td>
+            </tr>
+            }
+        </table>
+    </form>
+</body>
+</html>
+
+<h2>Query_1</h2>
+

@@ -15,14 +15,14 @@ CREATE TABLE Country
 	flag		VARBINARY(MAX)			DEFAULT(NULL),
 	anthem		VARBINARY(MAX)			DEFAULT(NULL)
 )
-
+CREATE TABLE 
 -- Procedures
 go
 /**
  * Update Population
  * Recalculate the population for each country
  */
-ALTER PROCEDURE dbo.updatePopulation AS
+CREATE PROCEDURE dbo.updatePopulation AS
 BEGIN
 	UPDATE dbo.Country SET population = 0
 	-- Cursor to travel the Person Table
@@ -55,7 +55,7 @@ go
  * Set up presidents in order to assign president from the same nationality and with a 31
  * years and up
  */
-ALTER PROCEDURE dbo.setPresidents AS
+CREATE PROCEDURE dbo.setPresidents AS
 BEGIN
 	-- Counter Regulator
 	DECLARE	@counter		INTEGER

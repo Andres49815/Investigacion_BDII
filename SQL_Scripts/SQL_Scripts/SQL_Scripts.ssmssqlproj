@@ -15,14 +15,26 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="WIN-9QGJA75CMA6\SQLMASTER:sa">
+          <Created>2018-08-25T18:17:27.0053737-06:00</Created>
+          <Type>SQL</Type>
+          <Server>WIN-9QGJA75CMA6\SQLMASTER</Server>
+          <UserName>sa</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="Country.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:ecRhin.ec.tec.ac.cr\Estudiantes:False:anobando</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>ecRhin.ec.tec.ac.cr\Estudiantes</AssociatedConnSrvName>
-          <AssociatedConnUserName>anobando</AssociatedConnUserName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:WIN-9QGJA75CMA6\SQLMASTER:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>WIN-9QGJA75CMA6\SQLMASTER</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>Country.sql</FullPath>
         </FileNode>
         <FileNode Name="Inserts.sql">
@@ -32,9 +44,9 @@
           <FullPath>Inserts.sql</FullPath>
         </FileNode>
         <FileNode Name="Person.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:ecRhin.ec.tec.ac.cr\Estudiantes:False:anobando</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>ecRhin.ec.tec.ac.cr\Estudiantes</AssociatedConnSrvName>
-          <AssociatedConnUserName>anobando</AssociatedConnUserName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:WIN-9QGJA75CMA6\SQLMASTER:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>WIN-9QGJA75CMA6\SQLMASTER</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>Person.sql</FullPath>
         </FileNode>
       </Items>

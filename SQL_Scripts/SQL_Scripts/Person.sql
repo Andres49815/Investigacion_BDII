@@ -6,16 +6,16 @@ USE Countries
  */
 CREATE TABLE Person
 (
-	id					INTEGER IDENTITY(1, 1)	CONSTRAINT PK_Person			PRIMARY KEY,
-	idNumber			INTEGER					CONSTRAINT NN_person_id_number	NOT NULL,
-	firstName			VARCHAR(50)				CONSTRAINT NN_Person_name		NOT NULL,
-	lastName			VARCHAR(50)				CONSTRAINT NN_Person_lastName	NOT NULL,
-	birthCountry		INTEGER					CONSTRAINT FK_PC_birth			REFERENCES Country(id),
-	residenceCountry	INTEGER					CONSTRAINT FK_PC_residence		REFERENCES Country(id),
-	birthdate			DATE					CONSTRAINT NN_Person_birthdate	NOT NULL,
-	email				VARCHAR(60)				CONSTRAINT NN_Person_email		NOT NULL,
-	photo				VARBINARY(MAX)			DEFAULT(NULL),
-	interview			VARBINARY(MAX)			DEFAULT(NULL)
+	id					INTEGER IDENTITY(1, 1)	CONSTRAINT PK_Person PRIMARY KEY,
+	idNumber			INTEGER,
+	firstName			VARCHAR(50),
+	lastName			VARCHAR(50),
+	birthCountry		INTEGER,
+	residenceCountry	INTEGER,
+	birthdate			DATE,
+	email				VARCHAR(60),
+	photo				VARBINARY(MAX) DEFAULT(NULL),
+	interview			VARBINARY(MAX) DEFAULT(NULL)
 )
 
 -- Procedures
@@ -29,7 +29,7 @@ AFTER INSERT AS BEGIN
 	UPDATE dbo.Country SET population = population + 1
 	WHERE id = (SELECT residenceCountry FROM inserted)
 END go
-drop procedure dbo.InsertPerson
+
 CREATE PROCEDURE [dbo].[InsertPerson]
 	@firstname		VARCHAR(30),
 	@lastname		VARCHAR(30),
@@ -49,11 +49,6 @@ BEGIN
 	INSERT INTO dbo.Person VALUES (@idNumber, @firstname, @lastname, @birthcountry, @birthcountry, @birthdate, @email, NULL, NULL)
 END
 
-begin transaction
-exec dbo.InsertPerson @firstname = 'Este es', @lastname = 'Chumi', @birthcountry = 1, @birthdate = '2000-01-01'
-
-select * from dbo.Person Where residenceCountry = 1
-commit
 /**
  * Every time a person is added, the population counter in the country decrease.
  */
@@ -63,11 +58,68 @@ AFTER DELETE AS BEGIN
 	WHERE id = (SELECT residenceCountry FROM deleted)
 END
 
-select * from dbo.Person where birthCountry = 1
-select implicit_transactions from sys.databases where name = 'Country'
 
-SET implicit_commit OFF
 
-SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 
-SET TRANSACTION ISOLATION LEVEL REPEATABLE READ
+
+
+
+ALTER PROCEDURE FullBackupCountries
+AS
+BEGIN
+ BACKUP DATABASE Countries  
+ TO DISK = 'C:\bd\Backup\CountriesDataBackup.BAK'  
+    WITH FORMAT,  
+    MEDIANAME = 'CountriesDataBackup',  
+    NAME = 'Full Data Backup of Countries';  
+ BACKUP LOG Countries  
+ TO DISK = 'C:\bd\Backup\CountriesLogBackup.BAK'  
+    WITH FORMAT,  
+    MEDIANAME = 'CountriesLogBackup',  
+    NAME = 'Full Log Backup of Countries';  
+END
+
+GO
+
+
+USE msdb ;  
+GO  
+EXEC dbo.sp_add_job  
+    @job_name = N'Country Backups' ;  
+GO  
+EXEC sp_add_jobstep  
+    @job_name = N'Country Backups',  
+    @step_name = N'Backup Data',  
+    @subsystem = N'TSQL',  
+    @command = N'EXEC FullBackupCountries',   
+    @retry_attempts = 5,  
+    @retry_interval = 5 ;  
+GO  
+EXEC dbo.sp_add_schedule  
+    @schedule_name = N'RunOnce',  
+    @freq_type = 1,  
+    @active_start_time = 183000 ;  
+USE msdb ;  
+GO  
+EXEC sp_attach_schedule  
+   @job_name = N'Country Backups',  
+   @schedule_name = N'RunOnce';  
+GO  
+EXEC dbo.sp_add_jobserver  
+    @job_name = N'Country Backups';  
+GO
+
+
+ BACKUP LOG Countries  
+ TO DISK = 'C:\bd\Backup\CountriesLogBackup.BAK'  
+    WITH FORMAT,  
+    MEDIANAME = 'CountriesLogBackup',  
+    NAME = 'Full Log Backup of Countries'; 
+
+exec dbo.fullbackupcountries
+
+ BACKUP LOG Countries  
+ TO DISK = 'C:\bd\Backup\CountriesLogBackup.BAK'  
+    WITH FORMAT,  
+    MEDIANAME = 'CountriesLogBackup',  
+    NAME = 'Full Log Backup of Countries'; 

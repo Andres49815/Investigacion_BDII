@@ -49,6 +49,11 @@ namespace CountriesApp.Controllers
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
             return View(country);
         }
+        public ActionResult Query_1()
+        {
+            List<CountryInfo_Q> info = CountryInfo();
+            return View(info);
+        }
         public ActionResult Query_2(int? Year = 1960, int? sum = 0)
         {
             Year += sum;
@@ -240,7 +245,7 @@ namespace CountriesApp.Controllers
 
             SqlConnection connection = new SqlConnection(connectionInfo);
             connection.Open();
-            using (SqlCommand command = new SqlCommand("", connection))
+            using (SqlCommand command = new SqlCommand("CountryInfo", connection))
             {
                 command.CommandTimeout = 0;
                 command.CommandType = CommandType.StoredProcedure;

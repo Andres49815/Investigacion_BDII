@@ -267,6 +267,7 @@
     <Content Include="Views\People\Index.cshtml" />
     <Content Include="Views\Countries\AllCountries.cshtml" />
     <Content Include="Views\Countries\Query_2.cshtml" />
+    <Content Include="Views\Countries\Query_1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
