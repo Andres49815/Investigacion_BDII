@@ -29,28 +29,86 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Person.email)
                 </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Person.photo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Person.interview)
+                </th>
             </tr>
             @{
             
             for (int i = 0; i < Model.SelectedPeople.Count; i++)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => Model.SelectedPeople.ToList()[i].firstName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => Model.SelectedPeople.ToList()[i].lastName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => Model.SelectedPeople.ToList()[i].birthdate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => Model.SelectedPeople.ToList()[i].Country.name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => Model.SelectedPeople.ToList()[i].email)
-                    </td>
-                </tr>
+                    var person = Model.SelectedPeople.ToList()[i];
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => person.firstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => person.lastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => person.birthdate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => person.Country.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => person.email)
+                </td>
+                <td>
+                    @{var photo = person.photo;}
+                    @if (photo == null)
+                    {
+                        using (Html.BeginForm("AddPhoto", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+
+                        }
+                        using (Html.BeginForm("AddPhoto", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            <fieldset>
+                                <input type="file" name="test" />
+                                <input type="submit" value="AddPhoto" class="btn btn-sm"/>
+                            </fieldset>
+                        }
+                    }
+                    else
+                    {
+                        var base64 = Convert.ToBase64String(photo);
+                        var imgsrc = string.Format("data:audio/mpeg;base64,{0}", base64);
+                        <div class="col-md-6 col-xs-6">
+                            <img src="@imgsrc" class="img-responsive" height="100" width="100" />
+                        </div>
+                    }
+
+                </td>
+                <td>
+                    @{var interview = person.interview;}
+                    @if (interview == null)
+                    {
+                        using (Html.BeginForm("AddInterview", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+
+                        }
+                        using (Html.BeginForm("AddInterview", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            <fieldset>
+                                <input type="file" name="test" />
+                                <input type="submit" value="Add interview" class="btn btn-sm" />
+                            </fieldset>
+                        }
+                    }
+                    else
+                    {
+                        var base64 = Convert.ToBase64String(person.interview);
+                        var soundsrc = string.Format("data:video/mp4;base64,{0}", base64);
+                        <video controls="" autoplay="" preload="auto" name="media" id="player" class="col-md-12 col-xs-12">
+                            <source src="@soundsrc" type="video/mp4">
+                        </video>
+                    }
+                </td>
+            </tr>
             }
             }
         </table>

@@ -233,6 +233,36 @@ namespace CountriesApp.Controllers
             connection.Close();
         }
 
+        private static void UpdatePhoto(int personId, byte[] photo)
+        {
+            SqlConnection connection = new SqlConnection(connectionInfo);
+            connection.Open();
+            using (SqlCommand command = new SqlCommand("dbo.UpdateProfilePhoto", connection))
+            {
+                command.CommandTimeout = 0;
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@personID", personId);
+                command.Parameters.AddWithValue("@photo", photo);
+                command.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
+
+        private static void UpdateInterview(int countryId, byte[] interview)
+        {
+            SqlConnection connection = new SqlConnection(connectionInfo);
+            connection.Open();
+            using (SqlCommand command = new SqlCommand("dbo.UpdateProfileInterview", connection))
+            {
+                command.CommandTimeout = 0;
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@personID", countryId);
+                command.Parameters.AddWithValue("@interview", interview);
+                command.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
+
         // Stored Procedures
         private List<CountryInfo_Q> CountryInfo()
         {
@@ -257,8 +287,8 @@ namespace CountriesApp.Controllers
                         {
                             countryID = (int)reader["CountryID"];
                             CountryName = (string)reader["CountryName"];
-                            AvarageAge = (int)reader["AvarageAge"];
-                            Population = (int)reader["Population"];
+                            AvarageAge = (int)reader["AverageAge"];
+                            Population = (int)(decimal) reader["Population"];
                             query.Add(new CountryInfo_Q(countryID, CountryName, AvarageAge, Population));
                         }
                     }
@@ -407,6 +437,73 @@ namespace CountriesApp.Controllers
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
             return View("AllCountries", c);
         }
+
+
+        [HttpPost]
+        public ActionResult AddPhoto(Country country, HttpPostedFileBase flag1, int personId)
+        {
+            try
+            {
+                HttpPostedFileBase file = Request.Files[0];
+                byte[] flag = new byte[file.ContentLength];
+                file.InputStream.Read(flag, 0, (int)file.ContentLength);
+                UpdatePhoto(personId, flag);
+            }
+            catch (Exception)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            // Country Information
+            List<object> countryInformation = SelectCountry(1);
+            Country c = (Country)countryInformation[0];
+            ViewBag.CountryIndex = (int)countryInformation[1];
+
+            // President Information
+            c.Person = SelectPresident((int)c.presidentID);
+
+            // Resident Information
+            List<object> peopleInformation = SelectPeople(1, 0);
+            c.People1 = (List<Person>)peopleInformation[0];
+            ViewBag.PeopleIndex = (int)peopleInformation[1];
+
+            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
+            return View("AllCountries", c);
+        }
+
+        [HttpPost]
+        public ActionResult AddInterview(Country country, HttpPostedFileBase flag1, int personId)
+        {
+            try
+            {
+                HttpPostedFileBase file = Request.Files[0];
+                byte[] flag = new byte[file.ContentLength];
+                file.InputStream.Read(flag, 0, (int)file.ContentLength);
+                UpdateInterview(personId, flag);
+            }
+            catch (Exception)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            // Country Information
+            List<object> countryInformation = SelectCountry(1);
+            Country c = (Country)countryInformation[0];
+            ViewBag.CountryIndex = (int)countryInformation[1];
+
+            // President Information
+            c.Person = SelectPresident((int)c.presidentID);
+
+            // Resident Information
+            List<object> peopleInformation = SelectPeople(1, 0);
+            c.People1 = (List<Person>)peopleInformation[0];
+            ViewBag.PeopleIndex = (int)peopleInformation[1];
+
+            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
+            return View("AllCountries", c);
+        }
+
+
         [HttpPost] public ActionResult AddAnthem(Country country, HttpPostedFileBase anthem1, int countryIndex)
         {
             Country countryModel = db.Countries.ToList()[countryIndex];

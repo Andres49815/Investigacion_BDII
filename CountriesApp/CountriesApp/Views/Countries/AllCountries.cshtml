@@ -136,28 +136,87 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Person.email)
                 </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Person.photo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Person.interview)
+                </th>
+
             </tr>
             @{
 
                 foreach (CountriesApp.Models.Person person in Model.People1) // (int i = start; i < end && i < Model.People1.Count; i++)
                 {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => person.firstName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => person.lastName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => person.birthdate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => person.Country.name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => person.email)
-                        </td>
-                    </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => person.firstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => person.lastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => person.birthdate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => person.Country.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => person.email)
+                </td>
+                <td>
+                    @{var photo = person.photo;}
+                    @if (photo == null)
+                    {
+                        using (Html.BeginForm("AddPhoto", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+
+                        }
+                        using (Html.BeginForm("AddPhoto", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            <fieldset>
+                                <input type="file" name="test" />
+                                <input type="submit" value="AddPhoto" class="btn btn-sm"/>
+                            </fieldset>
+                        }
+                    }
+                    else
+                    {
+                        var base64 = Convert.ToBase64String(photo);
+                        var imgsrc = string.Format("data:audio/mpeg;base64,{0}", base64);
+                            <div class="col-md-6 col-xs-6">
+                                <img src="@imgsrc" class="img-responsive" height="100" width="100" />
+                            </div>
+                    }
+
+                </td>
+                <td>
+                    @{var interview = person.interview;}
+                    @if (interview == null)
+                    {
+                        using (Html.BeginForm("AddInterview", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+
+                        }
+                        using (Html.BeginForm("AddInterview", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            <fieldset>
+                                <input type="file" name="test" />
+                                <input type="submit" value="Add interview" class="btn btn-sm"/>
+                            </fieldset>
+                        }
+                    }
+                    else
+                    {
+                        var base64 = Convert.ToBase64String(person.interview);
+                        var soundsrc = string.Format("data:video/mp4;base64,{0}", base64);
+                        <video controls="" autoplay="" preload="auto" name="media" id="player" class="col-md-12 col-xs-12" >
+                            <source src="@soundsrc" type="video/mp4">
+                        </video>
+                    }
+                </td>
+
+            </tr>
                 }
             }
 
@@ -224,20 +283,20 @@
                 @Html.LabelFor(p => person.birthCountry)
                 @Html.DropDownListFor(p => person.birthCountry, list)
                 <p>
-                    <input type="submit" value="Add person" />
+                    <input type="submit" value="Add person" class="btn btn-default" />
                 </p>
             </fieldset>
         }
         @using (Html.BeginForm("SendCommit", "Countries", FormMethod.Post, new { enctype = "multipart/form=data" }))
         {
             <p>
-                <input type="submit" value="Commit" />
+                <input type="submit" value="Commit" class="btn btn-default"/>
             </p>
         }
         @using (Html.BeginForm("Rollback", "Countries", FormMethod.Post, new { enctype = "multipart/form=data" }))
         {
             <P>
-                <input type="submit" value="Rollback" />
+                <input type="submit" value="Rollback" class="btn btn-default" />
             </P>
         }
         @Html.ActionLink("Consulta 1", "Query_1") |
