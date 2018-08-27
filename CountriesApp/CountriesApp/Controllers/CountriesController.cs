@@ -39,7 +39,7 @@ namespace CountriesApp.Controllers
             ViewBag.CountryIndex = (int)countryInformation[1];
 
             // President Information
-            country.Person = SelectPresident((int)country.presidentID);
+            country.Person = db.People.Find(country.presidentID);//SelectPresident((int)country.presidentID);
 
             // Resident Information
             List<object> peopleInformation = SelectPeople((int)countryIndex, 0);
@@ -355,7 +355,7 @@ namespace CountriesApp.Controllers
             ViewBag.CountryIndex = (int)countryInformation[1];
 
             // President Information
-            country.Person = SelectPresident((int)country.presidentID);
+            country.Person = db.People.Find(country.presidentID);
 
             // Resident Information
             List<object> peopleInformation = SelectPeople(1, 0);
@@ -374,7 +374,7 @@ namespace CountriesApp.Controllers
             ViewBag.CountryIndex = (int)countryInformation[1];
 
             // President Information
-            country.Person = SelectPresident((int)country.presidentID);
+            country.Person = db.People.Find(country.presidentID);
 
             // Resident Information
             List<object> peopleInformation = SelectPeople(1, 0);
@@ -393,7 +393,7 @@ namespace CountriesApp.Controllers
             ViewBag.CountryIndex = (int)countryInformation[1];
 
             // President Information
-            country.Person = SelectPresident((int)country.presidentID);
+            country.Person = db.People.Find(country.presidentID);
 
             // Resident Information
             List<object> peopleInformation = SelectPeople(1, 0);
@@ -427,7 +427,7 @@ namespace CountriesApp.Controllers
             ViewBag.CountryIndex = (int)countryInformation[1];
 
             // President Information
-            c.Person = SelectPresident((int)c.presidentID);
+            c.Person = db.People.Find(country.presidentID);
 
             // Resident Information
             List<object> peopleInformation = SelectPeople(1, 0);
@@ -460,7 +460,7 @@ namespace CountriesApp.Controllers
             ViewBag.CountryIndex = (int)countryInformation[1];
 
             // President Information
-            c.Person = SelectPresident((int)c.presidentID);
+            c.Person = db.People.Find(country.presidentID);
 
             // Resident Information
             List<object> peopleInformation = SelectPeople(1, 0);
@@ -492,7 +492,7 @@ namespace CountriesApp.Controllers
             ViewBag.CountryIndex = (int)countryInformation[1];
 
             // President Information
-            c.Person = SelectPresident((int)c.presidentID);
+            c.Person = db.People.Find(country.presidentID);
 
             // Resident Information
             List<object> peopleInformation = SelectPeople(1, 0);
@@ -541,16 +541,21 @@ namespace CountriesApp.Controllers
         public ActionResult DeletePerson(int id)
         {
             Person person = db.People.Find(id);
+            Country country = db.Countries.Find(person.birthCountry);
+            if (country.presidentID == id)
+            {
+                country.presidentID = null;
+            }
             db.People.Remove(person);
             db.SaveChanges();
 
             // Country Information
             List<object> countryInformation = SelectCountry(1);
-            Country country = (Country)countryInformation[0];
+            /*Country*/ country = (Country)countryInformation[0];
             ViewBag.CountryIndex = (int)countryInformation[1];
 
             // President Information
-            country.Person = SelectPresident((int)country.presidentID);
+            country.Person = db.People.Find(country.presidentID);
 
             // Resident Information
             List<object> peopleInformation = SelectPeople(1, 0);
@@ -573,7 +578,7 @@ namespace CountriesApp.Controllers
             ViewBag.CountryIndex = (int)countryInformation[1];
 
             // President Information
-            c.Person = SelectPresident((int)c.presidentID);
+            c.Person = db.People.Find(country.presidentID);
 
             // Resident Information
             List<object> peopleInformation = SelectPeople(1, 0);

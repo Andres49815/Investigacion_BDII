@@ -233,7 +233,7 @@
                     </td>
                 }
                 <td>
-                    @Html.ActionLink("Delete", "DeletePerson", new { id = person.id })
+                    @Html.ActionLink("Edit", "Edit", "People", new { id =  person.id }, new { }) | @Html.ActionLink("Delete", "DeletePerson", new { id = person.id })
                 </td>
             </tr>
                 }
