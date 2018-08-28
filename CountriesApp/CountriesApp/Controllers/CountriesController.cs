@@ -501,6 +501,8 @@ namespace CountriesApp.Controllers
             Person person = db.People.Find(id);
             ViewBag.birthCountry = new SelectList(db.Countries, "id", "name", person.birthCountry);
             ViewBag.residenceCountry = new SelectList(db.Countries, "id", "name", person.residenceCountry);
+            Person.GlobalPhoto = person.photo;
+            Person.GlobalInterview = person.interview;
             return View(person);
         }
         public ActionResult DeletePerson(int id)
@@ -530,14 +532,12 @@ namespace CountriesApp.Controllers
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
             return View("AllCountries", country);
         }
-        [HttpPost] public string Confirm_Edit([Bind(Include = "id,idNumber,firstName,lastName,birthCountry,residenceCountry,birthdate,email,photo,interview")] Person person)
+        [HttpPost] public ActionResult Confirm_Edit([Bind(Include = "id,idNumber,firstName,lastName,birthCountry,residenceCountry,birthdate,email")] Person person)
         {
-            if (ModelState.IsValid)
-            {
-                return person.ToString();
-                //db.Entry(person).State = EntityState.Modified;
-                //db.SaveChanges();
-            }
+            person.photo = Person.GlobalPhoto;
+            person.interview = Person.GlobalInterview;
+            db.Entry(person).State = EntityState.Modified;
+            db.SaveChanges();
 
             // Country Information
             List<object> countryInformation = SelectCountry(1);
@@ -553,7 +553,7 @@ namespace CountriesApp.Controllers
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
-            return "";// View("AllCountries", country);
+            return View("AllCountries", country);
         }
         #endregion
     }

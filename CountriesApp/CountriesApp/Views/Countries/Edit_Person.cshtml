@@ -9,8 +9,10 @@
 
 @using (Html.BeginForm())
 {
-    @Html.AntiForgeryToken()
+    Model.birthdate = Model.birthdate;
     
+    <input type="submit" value="Aceptar" formaction="/Countries/Confirm_Edit" name="Confirm_Edit" />
+
     <div class="form-horizontal">
         <h4>Person</h4>
         <hr />
@@ -91,10 +93,10 @@
                 }
                 @using (Html.BeginForm("AddPhoto", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
-                <fieldset>
-                    <input type="file" name="test" />
-                    <input type="submit" value="AddPhoto" class="btn btn-sm" />
-                </fieldset>
+                    <fieldset>
+                        <input type="file" name="test" />
+                        <input type="submit" value="AddPhoto" class="btn btn-sm" />
+                    </fieldset>
                 }
             </div>
         </div>
@@ -107,7 +109,7 @@
                 {
                     var base64 = Convert.ToBase64String(Model.interview);
                     var soundsrc = string.Format("data:video/mp4;base64,{0}", base64);
-                    <video controls="" autoplay="" preload="auto" name="media" id="player" class="col-md-12 col-xs-12">
+                    <video controls="" autoplay="" preload="auto" name="media" id="player" class="col-md-12 col-xs-12" width="300" height="300">
                         <source src="@soundsrc" type="video/mp4">
                     </video>
                 }
@@ -117,27 +119,17 @@
                 }
                 @using (Html.BeginForm("AddInterview", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
-                <fieldset>
-                    <input type="file" name="test" />
-                    <input type="submit" value="Add interview" class="btn btn-sm" />
-                </fieldset>
+                    <fieldset>
+                        <input type="file" name="test" />
+                        <input type="submit" value="Add interview" class="btn btn-sm" />
+                    </fieldset>
                 }
             </div>
         </div>
-
-        <div class="form-group">
-            @using (Html.BeginForm("Confirm_Edit", "Countries", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
-
-            }
-            @using (Html.BeginForm("Confirm_Edit", "Countries", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
-                <fieldset>
-                    <input type="submit" value="Confirm_Edit" class="btn btn-sm" />
-                </fieldset>
-            }
-        </div>
     </div>
+
+
+
 }
 
 <div>

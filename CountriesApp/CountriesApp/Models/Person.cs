@@ -43,6 +43,9 @@ namespace CountriesApp.Models
         public virtual Country Country { get; set; }
         public virtual Country Country1 { get; set; }
 
+        public static byte[] GlobalPhoto { get; set; }
+        public static byte[] GlobalInterview { get; set; }
+
         public bool CanBePresident()
         {
             return DateTime.Today.Year - birthdate.Year > 31 && residenceCountry == birthCountry;
