@@ -530,12 +530,13 @@ namespace CountriesApp.Controllers
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
             return View("AllCountries", country);
         }
-        [HttpPost] public ActionResult Confirm_Edit([Bind(Include = "id,idNumber,firstName,lastName,birthCountry,residenceCountry,birthdate,email")] Person person)
+        [HttpPost] public string Confirm_Edit([Bind(Include = "id,idNumber,firstName,lastName,birthCountry,residenceCountry,birthdate,email,photo,interview")] Person person)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(person).State = EntityState.Modified;
-                db.SaveChanges();
+                return person.ToString();
+                //db.Entry(person).State = EntityState.Modified;
+                //db.SaveChanges();
             }
 
             // Country Information
@@ -552,7 +553,7 @@ namespace CountriesApp.Controllers
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
-            return View("AllCountries", country);
+            return "";// View("AllCountries", country);
         }
         #endregion
     }

@@ -126,11 +126,11 @@
         </div>
 
         <div class="form-group">
-            @using (Html.BeginForm("Confirm_Edit", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+            @using (Html.BeginForm("Confirm_Edit", "Countries", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
 
             }
-            @using (Html.BeginForm("Confirm_Edit", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+            @using (Html.BeginForm("Confirm_Edit", "Countries", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
                 <fieldset>
                     <input type="submit" value="Confirm_Edit" class="btn btn-sm" />

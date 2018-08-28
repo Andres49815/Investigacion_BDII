@@ -256,7 +256,7 @@
             </script>
         }
 
-        @using (Html.BeginForm("AddPerson", "Countries", new { countryIndex = ViewBag.ActualIndex }, FormMethod.Post, new { enctype = "multipart/form=data" }))
+        @using (Html.BeginForm("AddPerson", "Countries", FormMethod.Post, new { enctype = "multipart/form=data" }))
         {
             CountriesApp.Models.Person person;
 
