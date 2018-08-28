@@ -46,7 +46,7 @@ namespace CountriesApp.Controllers
             country.People1 = (List<Person>)peopleInformation[0];
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
-            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
+            ViewBag.birthCountry = new SelectList(db.Countries.ToList(), "id", "name");
             return View(country);
         }
         public ActionResult Query_1()
@@ -142,38 +142,6 @@ namespace CountriesApp.Controllers
             obj.Add(idx);
             return obj;
         }
-        private static Person SelectPresident(int presidentID)
-        {
-            if (presidentID == -1)
-            {
-                return null;
-            }
-            SqlConnection connection = new SqlConnection(connectionInfo);
-            connection.Open();
-            string query = "SELECT firstName, lastName, birthdate\n" +
-                "FROM dbo.Person P INNER JOIN dbo.Country C ON (P.id = C.presidentID)\n" +
-                "WHERE C.presidentID = " + presidentID.ToString();
-            using (SqlCommand command = new SqlCommand(query, connection))
-            {
-                command.CommandTimeout = 0;
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    if (reader != null)
-                    {
-                        while (reader.Read())
-                        {
-                            Person president = new Person();
-                            president.firstName = (string)reader["firstName"];
-                            president.lastName = (string)reader["lastName"];
-                            president.birthdate = (DateTime)reader["birthdate"];
-                            connection.Close();
-                            return president;
-                        }
-                    }
-                }
-            }
-            return null;
-        }
         private static List<object> SelectPeople(int country, int start)
         {
             int id = 0, idNumber = 0, birthCountry = 0, residenceCountry = 0, idx = 0;
@@ -217,50 +185,6 @@ namespace CountriesApp.Controllers
             obj.Add(people);
             obj.Add(idx);
             return obj;
-        }
-        private static void UpdateFlag(int countryId, byte[] flag)
-        {
-            SqlConnection connection = new SqlConnection(connectionInfo);
-            connection.Open();
-            using (SqlCommand command = new SqlCommand("dbo.UpdateFlag", connection))
-            {
-                command.CommandTimeout = 0;
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@CountryId", countryId);
-                command.Parameters.AddWithValue("@Flag", flag);
-                command.ExecuteNonQuery();
-            }
-            connection.Close();
-        }
-
-        private static void UpdatePhoto(int personId, byte[] photo)
-        {
-            SqlConnection connection = new SqlConnection(connectionInfo);
-            connection.Open();
-            using (SqlCommand command = new SqlCommand("dbo.UpdateProfilePhoto", connection))
-            {
-                command.CommandTimeout = 0;
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@personID", personId);
-                command.Parameters.AddWithValue("@photo", photo);
-                command.ExecuteNonQuery();
-            }
-            connection.Close();
-        }
-
-        private static void UpdateInterview(int countryId, byte[] interview)
-        {
-            SqlConnection connection = new SqlConnection(connectionInfo);
-            connection.Open();
-            using (SqlCommand command = new SqlCommand("dbo.UpdateProfileInterview", connection))
-            {
-                command.CommandTimeout = 0;
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@personID", countryId);
-                command.Parameters.AddWithValue("@interview", interview);
-                command.ExecuteNonQuery();
-            }
-            connection.Close();
         }
 
         // Stored Procedures
@@ -401,7 +325,6 @@ namespace CountriesApp.Controllers
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
-            //SQLTransactionManager.ResetInstance();
             SQLTransactionManager.EndTransaction(isRollback: true);
             return View("AllCountries", country);
         }
@@ -414,113 +337,126 @@ namespace CountriesApp.Controllers
                 HttpPostedFileBase file = Request.Files[0];
                 byte[] flag = new byte[file.ContentLength];
                 file.InputStream.Read(flag, 0, (int)file.ContentLength);
-                UpdateFlag(countryIndex, flag);
-            }
-            catch (Exception)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            // Country Information
-            List<object> countryInformation = SelectCountry(1);
-            Country c = (Country)countryInformation[0];
-            ViewBag.CountryIndex = (int)countryInformation[1];
-
-            // President Information
-            c.Person = db.People.Find(country.presidentID);
-
-            // Resident Information
-            List<object> peopleInformation = SelectPeople(1, 0);
-            country.People1 = (List<Person>)peopleInformation[0];
-            ViewBag.PeopleIndex = (int)peopleInformation[1];
-
-            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
-            return View("AllCountries", c);
-        }
-
-
-        [HttpPost]
-        public ActionResult AddPhoto(Country country, HttpPostedFileBase flag1, int personId)
-        {
-            try
-            {
-                HttpPostedFileBase file = Request.Files[0];
-                byte[] flag = new byte[file.ContentLength];
-                file.InputStream.Read(flag, 0, (int)file.ContentLength);
-                UpdatePhoto(personId, flag);
-            }
-            catch (Exception)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            // Country Information
-            List<object> countryInformation = SelectCountry(1);
-            Country c = (Country)countryInformation[0];
-            ViewBag.CountryIndex = (int)countryInformation[1];
-
-            // President Information
-            c.Person = db.People.Find(country.presidentID);
-
-            // Resident Information
-            List<object> peopleInformation = SelectPeople(1, 0);
-            c.People1 = (List<Person>)peopleInformation[0];
-            ViewBag.PeopleIndex = (int)peopleInformation[1];
-
-            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
-            return View("AllCountries", c);
-        }
-
-        [HttpPost]
-        public ActionResult AddInterview(Country country, HttpPostedFileBase flag1, int personId)
-        {
-            try
-            {
-                HttpPostedFileBase file = Request.Files[0];
-                byte[] flag = new byte[file.ContentLength];
-                file.InputStream.Read(flag, 0, (int)file.ContentLength);
-                UpdateInterview(personId, flag);
-            }
-            catch (Exception)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            // Country Information
-            List<object> countryInformation = SelectCountry(1);
-            Country c = (Country)countryInformation[0];
-            ViewBag.CountryIndex = (int)countryInformation[1];
-
-            // President Information
-            c.Person = db.People.Find(country.presidentID);
-
-            // Resident Information
-            List<object> peopleInformation = SelectPeople(1, 0);
-            c.People1 = (List<Person>)peopleInformation[0];
-            ViewBag.PeopleIndex = (int)peopleInformation[1];
-
-            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
-            return View("AllCountries", c);
-        }
-
-
-        [HttpPost] public ActionResult AddAnthem(Country country, HttpPostedFileBase anthem1, int countryIndex)
-        {
-            Country countryModel = db.Countries.ToList()[countryIndex];
-            try
-            {
-                HttpPostedFileBase file = Request.Files[0];
-                countryModel.anthem = new byte[file.ContentLength];
-                file.InputStream.Read(countryModel.anthem, 0, (int)file.ContentLength);
+                Country countryModel = db.Countries.Find(countryIndex);
+                countryModel.flag = flag;
                 db.SaveChanges();
             }
             catch (Exception)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ViewBag.ActualIndex = countryIndex;
-            ViewBag.PopulationIndex = 1;
-            return View("AllCountries", countryModel);
+
+            // Country Information
+            List<object> countryInformation = SelectCountry(1);
+            Country c = (Country)countryInformation[0];
+            ViewBag.CountryIndex = (int)countryInformation[1];
+
+            // President Information
+            c.Person = db.People.Find(country.presidentID);
+
+            // Resident Information
+            List<object> peopleInformation = SelectPeople(1, 0);
+            c.People1 = (List<Person>)peopleInformation[0];
+            ViewBag.PeopleIndex = (int)peopleInformation[1];
+
+            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
+            return View("AllCountries", c);
+        }
+        [HttpPost] public ActionResult AddPhoto(HttpPostedFileBase flag1, int personId)
+        {
+            try
+            {
+                HttpPostedFileBase file = Request.Files[0];
+                byte[] photo = new byte[file.ContentLength];
+                file.InputStream.Read(photo, 0, (int)file.ContentLength);
+                Person person = db.People.Find(personId);
+                person.photo = photo;
+                db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            // Country Information
+            List<object> countryInformation = SelectCountry(1);
+            Country c = (Country)countryInformation[0];
+            ViewBag.CountryIndex = (int)countryInformation[1];
+
+            // President Information
+            c.Person = db.People.Find(c.presidentID);
+
+            // Resident Information
+            List<object> peopleInformation = SelectPeople(1, 0);
+            c.People1 = (List<Person>)peopleInformation[0];
+            ViewBag.PeopleIndex = (int)peopleInformation[1];
+
+            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
+            return View("AllCountries", c);
+        }
+        [HttpPost] public ActionResult AddInterview(HttpPostedFileBase flag1, int personId)
+        {
+            try
+            {
+                HttpPostedFileBase file = Request.Files[0];
+                Person personModel = db.People.Find(personId);
+                byte[] interview = new byte[file.ContentLength];
+                file.InputStream.Read(interview, 0, (int)file.ContentLength);
+                personModel.interview = interview;
+                db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            // Country Information
+            List<object> countryInformation = SelectCountry(1);
+            Country c = (Country)countryInformation[0];
+            ViewBag.CountryIndex = (int)countryInformation[1];
+
+            // President Information
+            c.Person = db.People.Find(c.presidentID);
+
+            // Resident Information
+            List<object> peopleInformation = SelectPeople(1, 0);
+            c.People1 = (List<Person>)peopleInformation[0];
+            ViewBag.PeopleIndex = (int)peopleInformation[1];
+
+            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
+            return View("AllCountries", c);
+        }
+        [HttpPost] public ActionResult AddAnthem(Country country, HttpPostedFileBase anthem1, int countryIndex)
+        {
+            try
+            {
+                HttpPostedFileBase file = Request.Files[0];
+                byte[] anthem = new byte[file.ContentLength];
+                file.InputStream.Read(anthem, 0, (int)file.ContentLength);
+                Country modelCountry = db.Countries.Find(countryIndex);
+                modelCountry.anthem = anthem;
+                db.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            // Country Information
+            List<object> countryInformation = SelectCountry(1);
+            Country c = (Country)countryInformation[0];
+            ViewBag.CountryIndex = (int)countryInformation[1];
+
+            // President Information
+            c.Person = db.People.Find(country.presidentID);
+
+            // Resident Information
+            List<object> peopleInformation = SelectPeople(1, 0);
+            c.People1 = (List<Person>)peopleInformation[0];
+            ViewBag.PeopleIndex = (int)peopleInformation[1];
+            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
+
+            return View("AllCountries", c);
         }
         #endregion
         #region Pagination
@@ -538,6 +474,35 @@ namespace CountriesApp.Controllers
         }
         #endregion
         #region Options
+        public ActionResult SetPresident(int countryID, int president)
+        {
+            Country country = db.Countries.Find(countryID);
+            country.presidentID = president;
+            db.SaveChanges();
+
+            // Country Information
+            List<object> countryInformation = SelectCountry(1);
+            Country c = (Country)countryInformation[0];
+            ViewBag.CountryIndex = (int)countryInformation[1];
+
+            // President Information
+            c.Person = db.People.Find(country.presidentID);
+
+            // Resident Information
+            List<object> peopleInformation = SelectPeople(1, 0);
+            c.People1 = (List<Person>)peopleInformation[0];
+            ViewBag.PeopleIndex = (int)peopleInformation[1];
+
+            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
+            return View("AllCountries", c);
+        }
+        public ActionResult Edit_Person(int id)
+        {
+            Person person = db.People.Find(id);
+            ViewBag.birthCountry = new SelectList(db.Countries, "id", "name", person.birthCountry);
+            ViewBag.residenceCountry = new SelectList(db.Countries, "id", "name", person.residenceCountry);
+            return View(person);
+        }
         public ActionResult DeletePerson(int id)
         {
             Person person = db.People.Find(id);
@@ -564,29 +529,30 @@ namespace CountriesApp.Controllers
 
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
             return View("AllCountries", country);
-
         }
-        public ActionResult SetPresident(int countryID, int president)
+        [HttpPost] public ActionResult Confirm_Edit([Bind(Include = "id,idNumber,firstName,lastName,birthCountry,residenceCountry,birthdate,email")] Person person)
         {
-            Country country = db.Countries.Find(countryID);
-            country.presidentID = president;
-            db.SaveChanges();
+            if (ModelState.IsValid)
+            {
+                db.Entry(person).State = EntityState.Modified;
+                db.SaveChanges();
+            }
 
             // Country Information
             List<object> countryInformation = SelectCountry(1);
-            Country c = (Country)countryInformation[0];
+            Country country = (Country)countryInformation[0];
             ViewBag.CountryIndex = (int)countryInformation[1];
 
             // President Information
-            c.Person = db.People.Find(country.presidentID);
+            country.Person = db.People.Find(country.presidentID);
 
             // Resident Information
             List<object> peopleInformation = SelectPeople(1, 0);
-            c.People1 = (List<Person>)peopleInformation[0];
+            country.People1 = (List<Person>)peopleInformation[0];
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
-            return View("AllCountries", c);
+            return View("AllCountries", country);
         }
         #endregion
     }

@@ -263,7 +263,7 @@
     <Content Include="Views\People\Create.cshtml" />
     <Content Include="Views\People\Delete.cshtml" />
     <Content Include="Views\People\Details.cshtml" />
-    <Content Include="Views\People\Edit.cshtml" />
+    <Content Include="Views\Countries\Edit_Person.cshtml" />
     <Content Include="Views\People\Index.cshtml" />
     <Content Include="Views\Countries\AllCountries.cshtml" />
     <Content Include="Views\Countries\Query_2.cshtml" />

@@ -76,23 +76,66 @@
         <div class="form-group">
             @Html.LabelFor(model => model.photo, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.photo, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.photo, "", new { @class = "text-danger" })
+                @{ var photo = Model.photo; }
+                @if (photo != null)
+                {
+                    var base64 = Convert.ToBase64String(photo);
+                    var imgsrc = string.Format("data:audio/mpeg;base64,{0}", base64);
+                    <div class="col-md-6 col-xs-6">
+                        <img src="@imgsrc" class="img-responsive" height="100" width="100" />
+                    </div>
+                }
+                @using (Html.BeginForm("AddPhoto", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+
+                }
+                @using (Html.BeginForm("AddPhoto", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                <fieldset>
+                    <input type="file" name="test" />
+                    <input type="submit" value="AddPhoto" class="btn btn-sm" />
+                </fieldset>
+                }
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.interview, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.interview, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.interview, "", new { @class = "text-danger" })
+                @{ var interview = Model.interview; }
+                @if (interview != null)
+                {
+                    var base64 = Convert.ToBase64String(Model.interview);
+                    var soundsrc = string.Format("data:video/mp4;base64,{0}", base64);
+                    <video controls="" autoplay="" preload="auto" name="media" id="player" class="col-md-12 col-xs-12">
+                        <source src="@soundsrc" type="video/mp4">
+                    </video>
+                }
+                @using (Html.BeginForm("AddInterview", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+
+                }
+                @using (Html.BeginForm("AddInterview", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                <fieldset>
+                    <input type="file" name="test" />
+                    <input type="submit" value="Add interview" class="btn btn-sm" />
+                </fieldset>
+                }
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
+            @using (Html.BeginForm("Confirm_Edit", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+
+            }
+            @using (Html.BeginForm("Confirm_Edit", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <fieldset>
+                    <input type="submit" value="Confirm_Edit" class="btn btn-sm" />
+                </fieldset>
+            }
         </div>
     </div>
 }

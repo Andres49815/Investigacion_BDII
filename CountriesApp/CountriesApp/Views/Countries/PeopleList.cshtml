@@ -38,9 +38,6 @@
                 <th>
                     Delete
                 </th>
-                @*<th>
-            @Html.DisplayNameFor(model => model.Person.interview)
-        </th>*@
             </tr>
             @{
             
@@ -88,32 +85,6 @@
                 <td>
                     @Html.DisplayFor(modelItem => person.email)
                 </td>
-
-                @*<td>
-            @{var interview = person.interview;}
-            @if (interview == null)
-            {
-                using (Html.BeginForm("AddInterview", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-                {
-
-                }
-                using (Html.BeginForm("AddInterview", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-                {
-                    <fieldset>
-                        <input type="file" name="test" />
-                        <input type="submit" value="Add interview" class="btn btn-sm" />
-                    </fieldset>
-                }
-            }
-            else
-            {
-                var base64 = Convert.ToBase64String(person.interview);
-                var soundsrc = string.Format("data:video/mp4;base64,{0}", base64);
-                <video controls="" autoplay="" preload="auto" name="media" id="player" class="col-md-12 col-xs-12">
-                    <source src="@soundsrc" type="video/mp4">
-                </video>
-            }
-        </td>*@
                 @if (person.CanBePresident())
                 {
                     <td>
