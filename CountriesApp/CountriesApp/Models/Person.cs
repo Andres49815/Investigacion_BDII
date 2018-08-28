@@ -45,6 +45,7 @@ namespace CountriesApp.Models
 
         public static byte[] GlobalPhoto { get; set; }
         public static byte[] GlobalInterview { get; set; }
+        public static System.DateTime GlobalBirthdate { get; set; }
 
         public bool CanBePresident()
         {

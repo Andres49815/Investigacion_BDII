@@ -501,6 +501,7 @@ namespace CountriesApp.Controllers
             Person person = db.People.Find(id);
             ViewBag.birthCountry = new SelectList(db.Countries, "id", "name", person.birthCountry);
             ViewBag.residenceCountry = new SelectList(db.Countries, "id", "name", person.residenceCountry);
+            Person.GlobalBirthdate = person.birthdate;
             Person.GlobalPhoto = person.photo;
             Person.GlobalInterview = person.interview;
             return View(person);
@@ -534,6 +535,11 @@ namespace CountriesApp.Controllers
         }
         [HttpPost] public ActionResult Confirm_Edit([Bind(Include = "id,idNumber,firstName,lastName,birthCountry,residenceCountry,birthdate,email")] Person person)
         {
+            // Birthdate
+            if (person.birthdate.Year == 1)
+            {
+                person.birthdate = Person.GlobalBirthdate;
+            }
             person.photo = Person.GlobalPhoto;
             person.interview = Person.GlobalInterview;
             db.Entry(person).State = EntityState.Modified;
