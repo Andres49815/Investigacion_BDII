@@ -31,15 +31,41 @@
                         <img src="@imgsrc" class="img-responsive" height="100" width="100" />
                     </div>
                 }
-                @using (Html.BeginForm("AddFlag", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                @using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
 
                 }
-                @using (Html.BeginForm("AddFlag", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                @using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
                     <fieldset>
                         <input type="file" name="test" />
                         <input type="submit" value="AddPhoto" class="btn btn-sm" />
+                    </fieldset>
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.anthem, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @{ var interview = Model.anthem; }
+                @if (interview != null)
+                {
+                    var base64 = Convert.ToBase64String(Model.anthem);
+                    var soundsrc = string.Format("data:video/mp4;base64,{0}", base64);
+                    <audio controls="" autoplay="" name="media" id="player">
+                        <source src="@soundsrc" type="audio/mpeg">
+                    </audio>
+                }
+                @using (Html.BeginForm("AddAnthem", "Countries", new { countryID = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+
+                }
+                @using (Html.BeginForm("AddAnthem", "Countries", new { countryID = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <fieldset>
+                        <input type="file" name="test" />
+                        <input type="submit" value="Add interview" class="btn btn-sm" />
                     </fieldset>
                 }
             </div>
@@ -68,26 +94,8 @@
                 @Html.ValidationMessageFor(model => model.population, "", new { @class = "text-danger" })
             </div>
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.presidentID, "presidentID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.presidentID, (SelectList)ViewBag.presidentID)
-                @Html.ValidationMessageFor(model => model.presidentID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
     </div>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

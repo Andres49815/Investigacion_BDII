@@ -186,34 +186,6 @@ namespace CountriesApp.Controllers
             obj.Add(idx);
             return obj;
         }
-        private static List<Person> PossiblePresidents(int countryID)
-        {
-            List<Person> candidates = new List<Person>();
-
-            SqlConnection connection = new SqlConnection(connectionInfo);
-            connection.Open();
-            using (SqlCommand command = new SqlCommand("dbo.PossiblePresidents", connection))
-            {
-                command.CommandType = CommandType.StoredProcedure;
-                command.CommandTimeout = 0;
-                command.Parameters.AddWithValue("@Country", countryID);
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    if (reader != null)
-                    {
-                        while (reader.Read())
-                        {
-                            Person candidate = new Person();
-                            candidate.id = (int)reader["id"];
-                            candidate.firstName = (string)reader["CompleteName"];
-                            candidates.Add(candidate);
-                        }
-                    }
-                }
-            }
-            return candidates;
-        }
-
 
         // Stored Procedures
         private List<CountryInfo_Q> CountryInfo()
@@ -310,7 +282,7 @@ namespace CountriesApp.Controllers
             country.Person = db.People.Find(country.presidentID);
 
             // Resident Information
-            List<object> peopleInformation = SelectPeople(1, 0);
+            List<object> peopleInformation = SelectPeople(country.id, 0);
             country.People1 = (List<Person>)peopleInformation[0];
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
@@ -329,7 +301,7 @@ namespace CountriesApp.Controllers
             country.Person = db.People.Find(country.presidentID);
 
             // Resident Information
-            List<object> peopleInformation = SelectPeople(1, 0);
+            List<object> peopleInformation = SelectPeople(country.id, 0);
             country.People1 = (List<Person>)peopleInformation[0];
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
@@ -415,7 +387,7 @@ namespace CountriesApp.Controllers
             c.Person = db.People.Find(c.presidentID);
 
             // Resident Information
-            List<object> peopleInformation = SelectPeople(1, 0);
+            List<object> peopleInformation = SelectPeople(c.id, 0);
             c.People1 = (List<Person>)peopleInformation[0];
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
@@ -447,21 +419,21 @@ namespace CountriesApp.Controllers
             c.Person = db.People.Find(c.presidentID);
 
             // Resident Information
-            List<object> peopleInformation = SelectPeople(1, 0);
+            List<object> peopleInformation = SelectPeople(c.id, 0);
             c.People1 = (List<Person>)peopleInformation[0];
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
             return View("AllCountries", c);
         }
-        [HttpPost] public ActionResult AddAnthem(Country country, HttpPostedFileBase anthem1, int countryIndex)
+        [HttpPost] public ActionResult AddAnthem(Country country, HttpPostedFileBase anthem1, int countryID)
         {
             try
             {
                 HttpPostedFileBase file = Request.Files[0];
                 byte[] anthem = new byte[file.ContentLength];
                 file.InputStream.Read(anthem, 0, (int)file.ContentLength);
-                Country modelCountry = db.Countries.Find(countryIndex);
+                Country modelCountry = db.Countries.Find(countryID);
                 modelCountry.anthem = anthem;
                 db.SaveChanges();
             }
@@ -479,7 +451,7 @@ namespace CountriesApp.Controllers
             c.Person = db.People.Find(country.presidentID);
 
             // Resident Information
-            List<object> peopleInformation = SelectPeople(1, 0);
+            List<object> peopleInformation = SelectPeople(c.id, 0);
             c.People1 = (List<Person>)peopleInformation[0];
             ViewBag.PeopleIndex = (int)peopleInformation[1];
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
@@ -494,7 +466,28 @@ namespace CountriesApp.Controllers
 
             PopulationIndex += sum;
 
-            List<object> peopleInformation = SelectPeople(CountryIndex, PopulationIndex);
+            List<object> peopleInformation = SelectPeople(country.id, PopulationIndex);
+            country.SelectedPeople = (List<Person>)peopleInformation[0];
+            PopulationIndex = (int)peopleInformation[1];
+
+            return View("PeopleList", country);
+        }
+        [HttpPost] public ActionResult FirstData(int CountryIndex)
+        {
+            Country country = (Country)SelectCountry(CountryIndex)[0];
+            
+            List<object> peopleInformation = SelectPeople(country.id, 0);
+            country.SelectedPeople = (List<Person>)peopleInformation[0];
+            PopulationIndex = (int)peopleInformation[1];
+
+            return View("PeopleList", country);
+        }
+        [HttpPost]
+        public ActionResult LastData(int CountryIndex)
+        {
+            Country country = (Country)SelectCountry(CountryIndex)[0];
+
+            List<object> peopleInformation = SelectPeople(country.id, -1);
             country.SelectedPeople = (List<Person>)peopleInformation[0];
             PopulationIndex = (int)peopleInformation[1];
 
@@ -509,7 +502,6 @@ namespace CountriesApp.Controllers
             Country.GlobalFlag = country.flag;
             Country.GlobalAnthem = country.anthem;
             Country.GlobalPopulation = country.population;
-            ViewBag.presidentID = new SelectList(PossiblePresidents(countryID), "id", "firstName");
             return View(country);
         }
         public ActionResult Delete(int countryID)
@@ -529,7 +521,7 @@ namespace CountriesApp.Controllers
             country.Person = db.People.Find(country.presidentID);
 
             // Resident Information
-            List<object> peopleInformation = SelectPeople(1, 0);
+            List<object> peopleInformation = SelectPeople(country.id, 0);
             country.People1 = (List<Person>)peopleInformation[0];
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
@@ -551,7 +543,7 @@ namespace CountriesApp.Controllers
             c.Person = db.People.Find(country.presidentID);
 
             // Resident Information
-            List<object> peopleInformation = SelectPeople(1, 0);
+            List<object> peopleInformation = SelectPeople(country.id, 0);
             c.People1 = (List<Person>)peopleInformation[0];
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
@@ -588,7 +580,7 @@ namespace CountriesApp.Controllers
             country.Person = db.People.Find(country.presidentID);
 
             // Resident Information
-            List<object> peopleInformation = SelectPeople(1, 0);
+            List<object> peopleInformation = SelectPeople(country.id, 0);
             country.People1 = (List<Person>)peopleInformation[0];
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
@@ -616,23 +608,37 @@ namespace CountriesApp.Controllers
             country.Person = db.People.Find(country.presidentID);
 
             // Resident Information
-            List<object> peopleInformation = SelectPeople(1, 0);
+            List<object> peopleInformation = SelectPeople(country.id, 0);
             country.People1 = (List<Person>)peopleInformation[0];
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
             return View("AllCountries", country);
         }
-        [HttpPost] public string Confirm_Edit_Country([Bind(Include = "id,name,area,population")] Country country)
+        [HttpPost] public ActionResult Confirm_Edit_Country([Bind(Include = "id,name,area,population")] Country country)
         {
             country.presidentID = Country.GlobalPresidentID;
             country.population = Country.GlobalPopulation;
-            return country.ToString();
             country.flag = Country.GlobalFlag;
             country.anthem = Country.GlobalAnthem;
             db.Entry(country).State = EntityState.Modified;
             db.SaveChanges();
-            
+
+            // Country Information
+            List<object> countryInformation = SelectCountry(1);
+            country = (Country)countryInformation[0];
+            ViewBag.CountryIndex = (int)countryInformation[1];
+
+            // President Information
+            country.Person = db.People.Find(country.presidentID);
+
+            // Resident Information
+            List<object> peopleInformation = SelectPeople(country.id, 0);
+            country.People1 = (List<Person>)peopleInformation[0];
+            ViewBag.PeopleIndex = (int)peopleInformation[1];
+
+            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
+            return View("AllCountries", country);
         }
         #endregion
     }

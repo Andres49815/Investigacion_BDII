@@ -60,11 +60,11 @@
                     <div class="row">
                         @if (Model.anthem == null)
                         {
-                            using (Html.BeginForm("AddAnthem", "Countries", new { countryIndex = ViewBag.CountryIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            using (Html.BeginForm("AddAnthem", "Countries", new { countryID = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                             {
 
                             }
-                            using (Html.BeginForm("AddAnthem", "Countries", new { countryIndex = ViewBag.CountryIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            using (Html.BeginForm("AddAnthem", "Countries", new { countryID = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                             {
                                 <fieldset>
                                     <input type="file" name="test" />
@@ -151,64 +151,64 @@
 
                 foreach (CountriesApp.Models.Person person in Model.People1) // (int i = start; i < end && i < Model.People1.Count; i++)
                 {
-            <tr>
-                <td>
-                    @{ var photo = person.photo; }
-                    @if (photo == null)
-                    {
-                        using (Html.BeginForm("AddPhoto", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-                        {
+                    <tr>
+                        <td>
+                            @{ var photo = person.photo; }
+                            @if (photo == null)
+                            {
+                                using (Html.BeginForm("AddPhoto", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
 
-                        }
-                        using (Html.BeginForm("AddPhoto", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-                        {
-                            <fieldset>
-                                <input type="file" name="test" />
-                                <input type="submit" value="AddPhoto" class="btn btn-sm" />
-                            </fieldset>
-                        }
-                    }
-                    else
-                    {
-                        var base64 = Convert.ToBase64String(photo);
-                        var imgsrc = string.Format("data:audio/mpeg;base64,{0}", base64);
-                        <div class="col-md-6 col-xs-6">
-                            <img src="@imgsrc" class="img-responsive" height="100" width="100" />
-                        </div>
-                    }
+                                }
+                                using (Html.BeginForm("AddPhoto", "Countries", new { personId = person.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+                                    <fieldset>
+                                        <input type="file" name="test" />
+                                        <input type="submit" value="AddPhoto" class="btn btn-sm" />
+                                    </fieldset>
+                                }
+                            }
+                            else
+                            {
+                                var base64 = Convert.ToBase64String(photo);
+                                var imgsrc = string.Format("data:audio/mpeg;base64,{0}", base64);
+                                <div class="col-md-6 col-xs-6">
+                                    <img src="@imgsrc" class="img-responsive" height="100" width="100" />
+                                </div>
+                            }
 
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => person.firstName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => person.lastName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => person.birthdate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => person.Country.name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => person.email)
-                </td>
-                @if (person.CanBePresident())
-                {
-                    <td>
-                        @Html.ActionLink("Set President", "SetPresident", new { countryID = Model.id, president = person.id })
-                    </td>
-                }
-                else
-                {
-                    <td>
-                        @Html.Display("Can't")
-                    </td>
-                }
-                <td>
-                    @Html.ActionLink("Edit", "Edit_Person", new { id =  person.id }) | @Html.ActionLink("Delete", "DeletePerson", new { id = person.id })
-                </td>
-            </tr>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => person.firstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => person.lastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => person.birthdate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => person.Country.name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => person.email)
+                        </td>
+                        @if (person.CanBePresident())
+                        {
+                            <td>
+                                @Html.ActionLink("Set President", "SetPresident", new { countryID = Model.id, president = person.id })
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                @Html.Display("Can't")
+                            </td>
+                        }
+                        <td>
+                            @Html.ActionLink("Edit", "Edit_Person", new { id = person.id }) | @Html.ActionLink("Delete", "DeletePerson", new { id = person.id })
+                        </td>
+                    </tr>
                 }
             }
 
@@ -252,6 +252,44 @@
                     })
                 })
             </script>
+            <script>
+                $("#btFirst").click(function ()
+                {
+                    var dataURL = "@Url.Action("FirstData", "Countries")";
+                    $.ajax({
+                        type: "POST",
+                        url: dataURL,
+                        data: {CountryIndex: "@ViewBag.CountryIndex", sum: "-1"},
+                        success: function (data)
+                        {
+                            $("#refresh").html(data);
+                        },
+                        error: function errorFunc()
+                        {
+                            alert('error');
+                        }
+                    })
+                })
+            </script>
+            <script>
+                $("#btLast").click(function ()
+                {
+                    var dataURL = "@Url.Action("LastData", "Countries")";
+                    $.ajax({
+                        type: "POST",
+                        url: dataURL,
+                        data: {CountryIndex: "@ViewBag.CountryIndex", sum: "-10000000"},
+                        success: function (data)
+                        {
+                            $("#refresh").html(data);
+                        },
+                        error: function errorFunc()
+                        {
+                            alert('error');
+                        }
+                    })
+                })
+            </script>
         }
 
         @using (Html.BeginForm("AddPerson", "Countries", FormMethod.Post, new { enctype = "multipart/form=data" }))
@@ -282,7 +320,7 @@
         @using (Html.BeginForm("SendCommit", "Countries", FormMethod.Post, new { enctype = "multipart/form=data" }))
         {
             <p>
-                <input type="submit" value="Commit" class="btn btn-default"/>
+                <input type="submit" value="Commit" class="btn btn-default" />
             </p>
         }
         @using (Html.BeginForm("Rollback", "Countries", FormMethod.Post, new { enctype = "multipart/form=data" }))
