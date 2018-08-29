@@ -12,6 +12,7 @@
 <body>
     <!-- Country data order: id name area population flag anthem president id -->
     <form name="frmCountries" id="frmCountries" method="post">
+        @Html.ActionLink("Edit", "Edit", new { countryID = Model.id }) | @Html.ActionLink("Delete", "Delete", new { countryID = Model.id })
         <br />
         <div class="form-group row">
             <button type="button" onclick="location.href='@Url.Action("AllCountries", "Countries", new { countryIndex = 999, sum = 0 })'" class="btn btn-default"> First </button>
@@ -34,11 +35,11 @@
                 <div class="col-xs-5">
                     @if (Model.flag == null)
                     {
-                        using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.CountryIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
 
                         }
-                        using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = ViewBag.CountryIndex }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        using (Html.BeginForm("AddFlag", "Countries", new { countryIndex = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
                             <fieldset>
                                 <input type="file" name="test" />

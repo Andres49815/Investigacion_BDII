@@ -42,7 +42,7 @@ namespace CountriesApp.Controllers
             country.Person = db.People.Find(country.presidentID);//SelectPresident((int)country.presidentID);
 
             // Resident Information
-            List<object> peopleInformation = SelectPeople((int)countryIndex, 0);
+            List<object> peopleInformation = SelectPeople(country.id, 0);
             country.People1 = (List<Person>)peopleInformation[0];
             ViewBag.PeopleIndex = (int)peopleInformation[1];
 
@@ -186,6 +186,34 @@ namespace CountriesApp.Controllers
             obj.Add(idx);
             return obj;
         }
+        private static List<Person> PossiblePresidents(int countryID)
+        {
+            List<Person> candidates = new List<Person>();
+
+            SqlConnection connection = new SqlConnection(connectionInfo);
+            connection.Open();
+            using (SqlCommand command = new SqlCommand("dbo.PossiblePresidents", connection))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandTimeout = 0;
+                command.Parameters.AddWithValue("@Country", countryID);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader != null)
+                    {
+                        while (reader.Read())
+                        {
+                            Person candidate = new Person();
+                            candidate.id = (int)reader["id"];
+                            candidate.firstName = (string)reader["CompleteName"];
+                            candidates.Add(candidate);
+                        }
+                    }
+                }
+            }
+            return candidates;
+        }
+
 
         // Stored Procedures
         private List<CountryInfo_Q> CountryInfo()
@@ -474,6 +502,36 @@ namespace CountriesApp.Controllers
         }
         #endregion
         #region Options
+        public ActionResult Edit(int countryID)
+        {
+            Country country = db.Countries.Find(countryID);
+            ViewBag.presidentID = new SelectList(PossiblePresidents(countryID), "id", "firstName");
+            return View(country);
+        }
+        public ActionResult Delete(int countryID)
+        {
+            Country cntry = db.Countries.Find(countryID);
+            cntry.presidentID = null;
+            db.SaveChanges();
+            db.Countries.Remove(cntry);
+            db.SaveChanges();
+
+            // Country Information
+            List<object> countryInformation = SelectCountry(1);
+            Country country = (Country)countryInformation[0];
+            ViewBag.CountryIndex = (int)countryInformation[1];
+
+            // President Information
+            country.Person = db.People.Find(country.presidentID);
+
+            // Resident Information
+            List<object> peopleInformation = SelectPeople(1, 0);
+            country.People1 = (List<Person>)peopleInformation[0];
+            ViewBag.PeopleIndex = (int)peopleInformation[1];
+
+            ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
+            return View("AllCountries", country);
+        }
         public ActionResult SetPresident(int countryID, int president)
         {
             Country country = db.Countries.Find(countryID);
@@ -519,7 +577,7 @@ namespace CountriesApp.Controllers
 
             // Country Information
             List<object> countryInformation = SelectCountry(1);
-            /*Country*/ country = (Country)countryInformation[0];
+            country = (Country)countryInformation[0];
             ViewBag.CountryIndex = (int)countryInformation[1];
 
             // President Information
@@ -560,6 +618,10 @@ namespace CountriesApp.Controllers
 
             ViewBag.birthCountry = new SelectList(SelectAllCountries(), "id", "name");
             return View("AllCountries", country);
+        }
+        [HttpPost] public string Confirm_Edit_Country([Bind(Include = "id,name,area,population")] Country country)
+        {
+            return country.ToString();
         }
         #endregion
     }

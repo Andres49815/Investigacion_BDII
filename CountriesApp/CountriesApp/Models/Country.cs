@@ -45,7 +45,9 @@ namespace CountriesApp.Models
         public override string ToString()
         {
             return "Nombre: " + name + "\n" +
-                "Arae: " + area.ToString();
+                "Arae: " + area.ToString() + "\n" +
+                "Poblacion: " + population.ToString() + "\n" +
+                "President: " + presidentID.ToString();
         }
     }
 
