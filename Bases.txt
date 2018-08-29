@@ -1,0 +1,147 @@
+--Trigger
+ALTER TRIGGER RemovePeople ON [dbo].Country
+INSTEAD OF DELETE 
+AS 
+BEGIN
+	DELETE FROM Person
+	WHERE Person.birthCountry IN (SELECT id FROM deleted)
+	OR Person.residenceCountry IN (SELECT id FROM deleted)
+	DELETE FROM Country
+	WHERE Country.id IN (SELECT id FROM deleted)
+END 
+
+/*Credentials/Connections
+
+(localDB)\MSSQLLocalDB
+ecRhin.ec.tec.ac.cr\Estudiantes
+anobando
+anobando
+*/
+--Change Recovery Mode
+USE master ;  
+ALTER DATABASE Countries SET RECOVERY FULL ;  
+
+--Procedure to do Backup
+CREATE PROCEDURE FullBackupCountries
+AS
+BEGIN
+	BACKUP DATABASE Countries  
+	TO DISK = 'C:\Users\Casa\Desktop\ALONSO\BD\BACKUP\CountriesDataBackup.BAK'  
+	   WITH FORMAT,  
+		  MEDIANAME = 'CountriesDataBackup',  
+		  NAME = 'Full Data Backup of Countries';  
+	BACKUP LOG Countries  
+	TO DISK = 'C:\Users\Casa\Desktop\ALONSO\BD\BACKUP\CountriesLogBackup.BAK'  
+	   WITH FORMAT,  
+		  MEDIANAME = 'CountriesLogBackup',  
+		  NAME = 'Full Log Backup of Countries';  
+END
+GO
+
+--Procedure to do Log Backup
+CREATE PROCEDURE LogBackupCountries
+AS
+BEGIN
+	BACKUP LOG Countries  
+	TO DISK = 'C:\Users\Casa\Desktop\ALONSO\BD\BACKUP\CountriesLogBackup.BAK'  
+	   WITH FORMAT,  
+		  MEDIANAME = 'CountriesLogBackup',  
+		  NAME = 'Full Log Backup of Countries';  
+END
+GO
+
+--Execute Backup
+EXEC FullBackupCountries
+
+--Create Job
+USE msdb ;  
+GO  
+EXEC dbo.sp_add_job  
+    @job_name = N'Country Backups' ;  
+GO  
+EXEC sp_add_jobstep  
+    @job_name = N'Country Backups',  
+    @step_name = N'Backup Data',  
+    @subsystem = N'TSQL',  
+    @command = N'EXEC FullBackupCountries',   
+    @retry_attempts = 5,  
+    @retry_interval = 5 ;  
+GO  
+EXEC dbo.sp_add_schedule  
+    @schedule_name = N'RunOnce',  
+    @freq_type = 1,  
+    @active_start_time = 183000 ;  
+USE msdb ;  
+GO  
+EXEC sp_attach_schedule  
+   @job_name = N'Country Backups',  
+   @schedule_name = N'RunOnce';  
+GO  
+EXEC dbo.sp_add_jobserver  
+    @job_name = N'Country Backups';  
+GO  
+
+
+--Comprobar Nivel de Aislamiento Actual
+SELECT CASE transaction_isolation_level 
+WHEN 0 THEN 'Unspecified' 
+WHEN 1 THEN 'ReadUncommitted' 
+WHEN 2 THEN 'ReadCommitted' 
+WHEN 3 THEN 'Repeatable' 
+WHEN 4 THEN 'Serializable' 
+WHEN 5 THEN 'Snapshot' END AS TRANSACTION_ISOLATION_LEVEL 
+FROM sys.dm_exec_sessions 
+where session_id = @@SPID
+
+--Cambiar nivel de aislamiento
+SET TRANSACTION LEVEL Repeatable Read
+--Antes estaba en Read Commited
+
+
+--Ver Configuración de Commited Snapshot
+SELECT is_read_committed_snapshot_on FROM sys.databases 
+WHERE name= 'YourDatabase'
+
+--Check for SQL Agent Installation
+EXEC master.dbo.xp_ServiceControl 'QUERYSTATE', 'SQLServerAgent'
+
+--Select All Triggers
+SELECT 
+     sysobjects.name AS trigger_name 
+    ,USER_NAME(sysobjects.uid) AS trigger_owner 
+    ,s.name AS table_schema 
+    ,OBJECT_NAME(parent_obj) AS table_name 
+    ,OBJECTPROPERTY( id, 'ExecIsUpdateTrigger') AS isupdate 
+    ,OBJECTPROPERTY( id, 'ExecIsDeleteTrigger') AS isdelete 
+    ,OBJECTPROPERTY( id, 'ExecIsInsertTrigger') AS isinsert 
+    ,OBJECTPROPERTY( id, 'ExecIsAfterTrigger') AS isafter 
+    ,OBJECTPROPERTY( id, 'ExecIsInsteadOfTrigger') AS isinsteadof 
+    ,OBJECTPROPERTY(id, 'ExecIsTriggerDisabled') AS [disabled] 
+FROM sysobjects 
+
+INNER JOIN sysusers 
+    ON sysobjects.uid = sysusers.uid 
+
+INNER JOIN sys.tables t 
+    ON sysobjects.parent_obj = t.object_id 
+
+INNER JOIN sys.schemas s 
+    ON t.schema_id = s.schema_id 
+
+WHERE sysobjects.type = 'TR' 
+
+--Check for Objects (with their ids)
+SELECT *
+FROM sys.objects
+WHERE name like '%<name>%'
+
+--Check Object Definition
+SELECT OBJECT_DEFINITION (<object id>) AS [Definition]; 
+
+--Check Constraints for a table
+SELECT CONSTRAINT_NAME, CONSTRAINT_CATALOG
+FROM INFORMATION_SCHEMA.CONSTRAINT_TABLE_USAGE
+WHERE TABLE_NAME = '<table name>'
+
+--Reset ID
+DBCC CHECKIDENT ('<table name>', RESEED, 0);  
