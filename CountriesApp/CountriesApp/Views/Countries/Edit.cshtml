@@ -10,77 +10,79 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
-<div class="form-horizontal">
-    <h4>Country</h4>
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.HiddenFor(model => model.id)
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.flag, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @{ var photo = Model.flag; }
-            @if (photo != null)
-            {
-                var base64 = Convert.ToBase64String(photo);
-                var imgsrc = string.Format("data:audio/mpeg;base64,{0}", base64);
-                <div class="col-md-6 col-xs-6">
-                    <img src="@imgsrc" class="img-responsive" height="100" width="100" />
-                </div>
-            }
-            @using (Html.BeginForm("AddFlag", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
+    <input type="submit" value="Aceptar" formaction="/Countries/Confirm_Edit_Country" name="Confirm_Edit" />
 
-            }
-            @using (Html.BeginForm("AddFlag", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
-                <fieldset>
-                    <input type="file" name="test" />
-                    <input type="submit" value="AddPhoto" class="btn btn-sm" />
-                </fieldset>
-            }
+    <div class="form-horizontal">
+        <h4>Country</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.flag, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @{ var photo = Model.flag; }
+                @if (photo != null)
+                {
+                    var base64 = Convert.ToBase64String(photo);
+                    var imgsrc = string.Format("data:audio/mpeg;base64,{0}", base64);
+                    <div class="col-md-6 col-xs-6">
+                        <img src="@imgsrc" class="img-responsive" height="100" width="100" />
+                    </div>
+                }
+                @using (Html.BeginForm("AddFlag", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+
+                }
+                @using (Html.BeginForm("AddFlag", "Countries", new { personId = Model.id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <fieldset>
+                        <input type="file" name="test" />
+                        <input type="submit" value="AddPhoto" class="btn btn-sm" />
+                    </fieldset>
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.area, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.area, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.area, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.population, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.population, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.population, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.presidentID, "presidentID", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.presidentID, (SelectList)ViewBag.presidentID)
+                @Html.ValidationMessageFor(model => model.presidentID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
         </div>
     </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.area, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.area, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.area, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.population, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.population, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-            @Html.ValidationMessageFor(model => model.population, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.presidentID, "presidentID", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DropDownListFor(model => model.presidentID, (SelectList)ViewBag.presidentID)
-            @Html.ValidationMessageFor(model => model.presidentID, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Save" class="btn btn-default" />
-        </div>
-    </div>
-</div>
 }
 
 <div>

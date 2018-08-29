@@ -42,6 +42,11 @@ namespace CountriesApp.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Person> SelectedPeople { get; set; }
 
+        public static Nullable<int> GlobalPresidentID { get; set; }
+        public static byte[] GlobalFlag { get; set; }
+        public static byte[] GlobalAnthem { get; set; }
+        public static short GlobalPopulation { get; set; }
+
         public override string ToString()
         {
             return "Nombre: " + name + "\n" +

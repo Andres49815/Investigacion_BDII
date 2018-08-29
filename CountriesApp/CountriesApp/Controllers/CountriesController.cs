@@ -505,6 +505,10 @@ namespace CountriesApp.Controllers
         public ActionResult Edit(int countryID)
         {
             Country country = db.Countries.Find(countryID);
+            Country.GlobalPresidentID = country.presidentID;
+            Country.GlobalFlag = country.flag;
+            Country.GlobalAnthem = country.anthem;
+            Country.GlobalPopulation = country.population;
             ViewBag.presidentID = new SelectList(PossiblePresidents(countryID), "id", "firstName");
             return View(country);
         }
@@ -621,7 +625,14 @@ namespace CountriesApp.Controllers
         }
         [HttpPost] public string Confirm_Edit_Country([Bind(Include = "id,name,area,population")] Country country)
         {
+            country.presidentID = Country.GlobalPresidentID;
+            country.population = Country.GlobalPopulation;
             return country.ToString();
+            country.flag = Country.GlobalFlag;
+            country.anthem = Country.GlobalAnthem;
+            db.Entry(country).State = EntityState.Modified;
+            db.SaveChanges();
+            
         }
         #endregion
     }
