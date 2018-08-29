@@ -16,8 +16,8 @@ namespace CountriesApp.Controllers
     {
         private static int PopulationIndex = 0;
         private CountriesEntities db = new CountriesEntities();
-        private static string connectionInfo = "data source=ecRhin.ec.tec.ac.cr\\Estudiantes;initial catalog=Countries;persist security info=True;" +
-            "user id=anobando;password=anobando;MultipleActiveResultSets=True;App=EntityFramework";
+        private static string connectionInfo = "data source=bd2progra1countries.database.windows.net;initial " +
+        "catalog=Countries;persist security info=True;user id=admin1;password=osAf34@fdl4029;MultipleActiveResultSets=True;App=EntityFramework";
 
         #region Constructors
         /**
